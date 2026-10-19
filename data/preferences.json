@@ -1,0 +1,43 @@
+{
+  "target_titles": [
+    "Software Engineer",
+    "Software Development Engineer",
+    "SDE",
+    "AI Engineer",
+    "Data Engineer",
+    "Data Analyst",
+    "Business Analyst",
+    "Generative AI Engineer",
+    "Machine Learning Engineer"
+  ],
+  "preferred_locations": [
+    "Remote",
+    "Noida",
+    "Gurgaon",
+    "Delhi",
+    "Delhi NCR",
+    "Pune",
+    "Bangalore",
+    "Bengaluru",
+    "Hyderabad",
+    "Indore",
+    "Mysore",
+    "Kolkata"
+  ],
+  "remote_preference": "hybrid_or_remote",
+  "min_salary": 0,
+  "salary_currency": "INR",
+  "employment_types": [
+    "full-time"
+  ],
+  "min_match_score": 75,
+  "max_applications_per_hour": 5,
+  "max_applications_per_day": 25,
+  "automation_mode": "automatic",
+  "work_authorization": "Authorized to work in India (Citizen)",
+  "requires_sponsorship": false,
+  "notice_period_days": 15,
+  "notice_period_text": "Immediate / 15 days or less",
+  "preferred_companies": [],
+  "excluded_companies": []
+}

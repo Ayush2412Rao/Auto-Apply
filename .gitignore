@@ -19,7 +19,24 @@ __pycache__/
 .coverage
 htmlcov/
 
-# Local databases & logs
+# Node & Frontend
+node_modules/
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+next-env.d.ts
+
+# ChromaDB & Vector Store
+data/chromadb/
+chromadb/
+
+# Runtime tailored artifacts
+data/resumes/tailored/
+data/screenshots/
+data/*.pdf
+data/*.docx
 *.db
 *.sqlite3
 logs/
