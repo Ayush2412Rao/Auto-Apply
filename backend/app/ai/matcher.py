@@ -48,8 +48,23 @@ def compute_dynamic_experience(start_date_str: str = "2025-05-01") -> Dict[str, 
     }
 
 class JobMatcher:
+    # Foreign locations strictly forbidden
+    FOREIGN_LOCATIONS = [
+        "united states", "usa", "u.s.", "uk", "united kingdom", "london", "canada", "toronto", "vancouver",
+        "germany", "berlin", "munich", "singapore", "australia", "sydney", "melbourne", "dubai", "uae",
+        "europe", "netherlands", "amsterdam", "poland", "france", "paris", "japan", "tokyo", "ireland",
+        "dublin", "switzerland", "sweden", "spain", "brazil", "philippines", "pakistan", "bangladesh"
+    ]
+
+    INDIAN_LOCATIONS = [
+        "india", "noida", "gurgaon", "gurugram", "delhi", "delhi ncr", "bengaluru", "bangalore", 
+        "pune", "hyderabad", "mumbai", "chennai", "kolkata", "indore", "mysore", "ahmedabad", 
+        "jaipur", "chandigarh", "kochi", "trivandrum", "coimbatore", "nagpur", "lucknow", 
+        "bhubaneswar", "surat", "vadodara", "mohali"
+    ]
+
     def evaluate_hard_filters(self, job: Dict[str, Any], preferences: Dict[str, Any]) -> Dict[str, Any]:
-        """Evaluates deterministic restrictions (excluded companies, location, full-time type, experience ceiling) before invoking LLM."""
+        """Evaluates deterministic restrictions (excluded companies, strictly India location, full-time type, 1-2 years experience ceiling) before invoking LLM."""
         # 1. Excluded companies
         excluded_companies = [c.lower() for c in preferences.get("excluded_companies", [])]
         company = job.get("company_name", "").lower()
@@ -59,7 +74,7 @@ class JobMatcher:
                 "reason": f"Company '{job.get('company_name')}' is in excluded list."
             }
 
-        # 2. Employment type filter (strictly full-time if configured)
+        # 2. Employment type filter (strictly full-time)
         allowed_types = [t.lower() for t in preferences.get("employment_types", ["full-time"])]
         job_type = str(job.get("employment_type", "full-time")).lower()
         if "full-time" in allowed_types:
@@ -69,55 +84,51 @@ class JobMatcher:
                     "reason": f"Job employment type '{job.get('employment_type')}' is not full-time."
                 }
 
-        # 3. Location & Workplace filter (All over India + Remote, Hybrid, or On-site)
-        preferred_locs = [loc.lower() for loc in preferences.get("preferred_locations", [])]
+        # 3. Location filter: Strictly INDIA ONLY (no foreign countries)
         job_loc = job.get("location", "").lower()
         is_remote = job.get("is_remote", False) or "remote" in job_loc
-        pan_india = any(k in preferred_locs for k in ["all over india", "india", "any"])
 
-        # Any job in India or remote is eligible when Pan-India is enabled
-        is_in_india = any(c in job_loc for c in [
-            "india", "noida", "gurgaon", "gurugram", "delhi", "bengaluru", "bangalore", 
-            "pune", "hyderabad", "mumbai", "chennai", "kolkata", "indore", "mysore", "ahmedabad", "jaipur"
-        ])
-
-        if not is_remote and not pan_india and preferred_locs:
-            matched_loc = any(pref in job_loc or job_loc in pref for pref in preferred_locs)
-            if not matched_loc:
-                return {
-                    "eligible": False,
-                    "reason": f"Location '{job.get('location')}' does not match preferred locations {preferences.get('preferred_locations')}"
-                }
-        elif not is_remote and pan_india and not is_in_india and job_loc:
-            # If search is pan-india but job is explicitly in another country (e.g. London, US)
+        # Reject any foreign country mention
+        if any(f in job_loc for f in self.FOREIGN_LOCATIONS) and "india" not in job_loc:
             return {
                 "eligible": False,
-                "reason": f"Job location '{job.get('location')}' is outside India."
+                "reason": f"Job location '{job.get('location')}' is in a foreign country. Only positions within India are eligible."
             }
 
-        # 4. Seniority / Experience ceiling filter
-        # Disqualify extreme seniority roles (Senior Manager, Director, VP, Principal, Staff with 6+ or 8+ years)
+        is_in_india = any(c in job_loc for c in self.INDIAN_LOCATIONS)
+        if not is_remote and not is_in_india and job_loc:
+            return {
+                "eligible": False,
+                "reason": f"Job location '{job.get('location')}' is outside India. Strictly India-only positions are allowed."
+            }
+
+        # 4. Seniority / Experience ceiling filter for strictly 1-2 YEARS bracket
         title_lower = job.get("job_title", "").lower()
-        extreme_senior_keywords = ["director", "senior manager", "sr. manager", "vice president", "principal engineer", "staff software engineer", "chief architect"]
-        if any(kw in title_lower for kw in extreme_senior_keywords):
+        desc_lower = job.get("description", "").lower()[:2000]
+
+        # Filter out Senior/Lead/Staff/Director/Principal/Manager titles exceeding 1-2 years
+        senior_keywords = [
+            "senior", "sr.", "lead", "principal", "staff", "architect", 
+            "manager", "director", "head of", "vice president", "vp"
+        ]
+        if any(re.search(rf'\b{re.escape(kw)}\b', title_lower) for kw in senior_keywords):
             return {
                 "eligible": False,
-                "reason": f"Role '{job.get('job_title')}' requires senior executive/staff level beyond target 0-3 years experience."
+                "reason": f"Role title '{job.get('job_title')}' requires senior/lead level, which exceeds target 1-2 years experience bracket."
             }
 
-        # Check explicit high years requirements in text (e.g. "8+ years", "10+ years")
-        desc_lower = job.get("description", "").lower()[:1500]
-        high_exp_match = re.search(r'([6-9]|1[0-5])\+?\s*(?:to\s*\d+\s*)?years?(?:\s*of)?\s*experience', desc_lower)
-        if high_exp_match and ("senior" in title_lower or "lead" in title_lower or "manager" in title_lower):
+        # Check explicit years requirement in description: 3+ years, 4+ years, 5+ years, 3 to 5 years, etc.
+        high_exp_match = re.search(r'\b([3-9]|\d{2,})\+?\s*(?:to\s*\d+\s*)?years?(?:\s*of)?\s*experience\b', desc_lower)
+        if high_exp_match:
             return {
                 "eligible": False,
-                "reason": f"Job requires {high_exp_match.group(0)}, which exceeds target 0-3 years bracket."
+                "reason": f"Job requires {high_exp_match.group(0)}, which exceeds your 1-2 years experience bracket."
             }
 
         return {"eligible": True, "reason": "Passed hard filters."}
 
     def evaluate_job(self, job: Dict[str, Any], user_profile: Dict[str, Any], preferences: Dict[str, Any], user_id: int = 1) -> Dict[str, Any]:
-        """Performs full end-to-end matching evaluation using Gemini + ChromaDB, incorporating dynamic experience."""
+        """Performs full end-to-end matching evaluation using Gemini + ChromaDB, incorporating dynamic experience and 1-2 year target bracket."""
         # 1. Check Hard Filters
         filter_res = self.evaluate_hard_filters(job, preferences)
         if not filter_res["eligible"]:
@@ -147,10 +158,11 @@ CANDIDATE VERIFIED CONTEXT:
 Name: {user_profile.get('name', 'Ayush Rao')}
 Headline: {user_profile.get('headline', '')}
 Current Total Experience: {exp_info['text']} (Total {exp_info['total_months']} months of professional work history at MAQ Software & Grasim Industries)
-Target Experience Bracket: 0 to 3 years (Junior / Mid-level SDE, Software Engineer, AI Engineer, Data Engineer)
+Target Experience Bracket: Strictly 1 to 2 years (e.g. Software Engineer, SDE 1, Junior Software Engineer, Associate Engineer, 1-2 YOE)
 Current CTC: 6 LPA
 Expected CTC: 7 - 12 LPA
-Work Schedule Flexibility: 5 to 6 days/week (Hybrid, Remote, or On-site across India)
+Location Requirement: Strictly India Only (Noida, Gurgaon, Bangalore, Pune, Hyderabad, or any Indian city + Remote in India)
+Work Schedule Flexibility: 5 to 6 days/week (Hybrid, Remote, or On-site)
 Professional Summary: {user_profile.get('summary', '')}
 
 Relevant Retrieved Achievements & Skills:
@@ -166,8 +178,9 @@ Description:
 
 SCORING CRITERIA:
 - 0 to 100 integer score based on overlap of technical skills, role responsibilities, and experience level ({exp_info['text']}).
-- Award high scores (75-95+) for roles matching Python, SQL, Agentic AI (LangGraph/LangChain), Power Platform (Power BI, Copilot Studio), FastAPI, React, or Snowflake.
-- Give fair credit for Junior, SDE 1, Software Engineer, and Associate positions suitable for 1-3 years experience.
+- The candidate is specifically targeting roles tailored for 1 to 2 years of experience.
+- Award high scores (75-95+) for roles matching Python, SQL, Agentic AI (LangGraph/LangChain), Power Platform (Power BI, Copilot Studio), FastAPI, React, or Snowflake suitable for 1-2 years experience.
+- If the position strictly demands 3+ years or senior experience, adjust score downwards or reject.
 - Highlight specific matched skills and missing qualifications.
 
 OUTPUT REQUIREMENTS:
@@ -179,7 +192,7 @@ Return valid JSON matching this exact structure:
   "matched_skills": ["Python", "SQL", "LangGraph", "FastAPI"],
   "missing_qualifications": ["AWS experience"],
   "recommendation": "proceed",
-  "reasoning_summary": "Strong match in Python, AI agents, and data engineering. Experience of {exp_info['text']} aligns well with this software engineering position."
+  "reasoning_summary": "Strong match in Python, AI agents, and data engineering. Experience of {exp_info['text']} aligns perfectly with this 1-2 years software engineering role."
 }}
 """
         min_threshold = preferences.get("min_match_score", 75)
@@ -209,7 +222,7 @@ Return valid JSON matching this exact structure:
                 "missing_qualifications": [],
                 "eligibility_status": "eligible",
                 "recommendation": "proceed",
-                "reasoning_summary": f"Evaluated candidate with {exp_info['text']} experience."
+                "reasoning_summary": f"Evaluated candidate with {exp_info['text']} experience for 1-2 years role."
             }
 
 job_matcher = JobMatcher()

@@ -3,7 +3,9 @@
     "Software Engineer",
     "Software Development Engineer",
     "SDE",
+    "SDE 1",
     "Junior Software Engineer",
+    "Associate Software Engineer",
     "AI Engineer",
     "Data Engineer",
     "Data Analyst",
@@ -12,10 +14,13 @@
     "Machine Learning Engineer",
     "Power Platform Developer"
   ],
+  "country_filter": "India Only",
+  "allowed_countries": [
+    "India"
+  ],
+  "allow_foreign_countries": false,
   "preferred_locations": [
-    "All over India",
     "India",
-    "Remote",
     "Noida",
     "Gurgaon",
     "Delhi",
@@ -28,7 +33,8 @@
     "Chennai",
     "Indore",
     "Mysore",
-    "Kolkata"
+    "Kolkata",
+    "Remote"
   ],
   "remote_preference": "any (hybrid, remote, on-site)",
   "workplace_types": [
@@ -49,7 +55,9 @@
   "work_status": "Experienced",
   "experience_start_date": "2025-05-01",
   "experience_baseline_months": 17,
-  "experience_level": "1-3 years (Junior / Mid-level SDE)",
+  "experience_level": "1-2 years",
+  "min_experience_years": 1,
+  "max_experience_years": 2,
   "min_match_score": 75,
   "max_applications_per_hour": 5,
   "max_applications_per_day": 25,
