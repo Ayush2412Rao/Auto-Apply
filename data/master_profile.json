@@ -2,9 +2,11 @@
   "name": "Ayush Rao",
   "headline": "Software Engineer – AI/ML & Data Engineering",
   "work_status": "Experienced",
-  "total_experience_years": 1.0,
+  "experience_start_date": "2025-05-01",
+  "total_experience_text": "1 year 5 months",
+  "total_experience_years": 1.4,
   "compensation": {
-    "current_ctc": "6 - 9 LPA",
+    "current_ctc": "6 LPA",
     "expected_ctc": "7 - 12 LPA",
     "currency": "INR"
   },

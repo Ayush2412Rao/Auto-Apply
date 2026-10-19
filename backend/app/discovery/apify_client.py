@@ -108,7 +108,8 @@ Qualifications:
         discovered: List[Dict[str, Any]] = []
         try:
             query = search_queries[0] if search_queries else "Software Engineer"
-            loc = locations[0] if locations else "Noida, India"
+            raw_loc = locations[0] if locations else "India"
+            loc = "India" if raw_loc.lower() in ["all over india", "pan-india", "any"] else raw_loc
             
             if "google-jobs" in settings.DEFAULT_ACTOR_ID.lower() or "ckldy9gaqf6qlp6gp" in settings.DEFAULT_ACTOR_ID.lower():
                 run_input = {
