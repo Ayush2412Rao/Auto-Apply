@@ -107,21 +107,40 @@ Qualifications:
 
         discovered: List[Dict[str, Any]] = []
         try:
-            # Run configured Actor (e.g. LinkedIn Scraper)
             query = search_queries[0] if search_queries else "Software Engineer"
-            loc = locations[0] if locations else "India"
-            run_input = {
-                "keywords": query,
-                "location": loc,
-                "maxJobs": max_items
-            }
-            print(f"Executing Apify Actor {settings.DEFAULT_ACTOR_ID} with keywords='{query}', location='{loc}'...")
+            loc = locations[0] if locations else "Noida, India"
+            
+            if "google-jobs" in settings.DEFAULT_ACTOR_ID.lower() or "ckldy9gaqf6qlp6gp" in settings.DEFAULT_ACTOR_ID.lower():
+                run_input = {
+                    "query": query,
+                    "location": loc,
+                    "country": "in",
+                    "google_domain": "google.co.in",
+                    "posted_within": "7d",
+                    "num_results": max(max_items, 10),
+                    "max_pagination": 2
+                }
+            else:
+                run_input = {
+                    "keywords": query,
+                    "location": loc,
+                    "maxJobs": max_items
+                }
+            
+            print(f"Executing Apify Actor '{settings.DEFAULT_ACTOR_ID}' with query='{query}', location='{loc}'...")
             run = self.client.actor(settings.DEFAULT_ACTOR_ID).call(run_input=run_input)
             
-            if run and run.get("defaultDatasetId"):
-                dataset_items = self.client.dataset(run["defaultDatasetId"]).list_items().items
+            # Support both dataclass/object and dict response from apify-client
+            dataset_id = (
+                getattr(run, "default_dataset_id", None) or 
+                getattr(run, "defaultDatasetId", None) or 
+                (run.get("defaultDatasetId") if hasattr(run, "get") else None)
+            )
+            
+            if dataset_id:
+                dataset_items = self.client.dataset(dataset_id).list_items().items
                 for item in dataset_items:
-                    normalized = job_normalizer.normalize(item, source="apify_actor")
+                    normalized = job_normalizer.normalize(item, source="google_jobs")
                     discovered.append(normalized)
             print(f"Apify: Successfully retrieved {len(discovered)} jobs from Actor run.")
         except Exception as e:

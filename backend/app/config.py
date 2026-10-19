@@ -31,7 +31,7 @@ class Settings(BaseSettings):
 
     APIFY_API_TOKEN: str = ""
     APIFY_TOKEN: str = ""
-    DEFAULT_ACTOR_ID: str = "curious_coder/linkedin-salary-scraper"
+    DEFAULT_ACTOR_ID: str = "johnvc/google-jobs-scraper"
 
     EMAIL_PROVIDER: str = "smtp"
     SMTP_HOST: str = "smtp.gmail.com"

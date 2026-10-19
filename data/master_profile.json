@@ -1,6 +1,13 @@
 {
   "name": "Ayush Rao",
   "headline": "Software Engineer – AI/ML & Data Engineering",
+  "work_status": "Experienced",
+  "total_experience_years": 1.0,
+  "compensation": {
+    "current_ctc": "6 - 9 LPA",
+    "expected_ctc": "7 - 12 LPA",
+    "currency": "INR"
+  },
   "contact": {
     "phone": "+91-7667880422",
     "email": "ayushrao786420@gmail.com",

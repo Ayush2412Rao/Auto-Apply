@@ -25,11 +25,16 @@
     "Kolkata"
   ],
   "remote_preference": "hybrid_or_remote",
-  "min_salary": 0,
+  "min_salary": 700000,
+  "target_salary": 1000000,
+  "current_ctc": "6 - 9 LPA",
+  "expected_ctc": "7 - 12 LPA",
   "salary_currency": "INR",
   "employment_types": [
     "full-time"
   ],
+  "work_status": "Experienced",
+  "total_experience_years": 1.0,
   "min_match_score": 75,
   "max_applications_per_hour": 5,
   "max_applications_per_day": 25,
