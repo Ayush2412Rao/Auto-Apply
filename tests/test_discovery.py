@@ -20,6 +20,36 @@ def test_normalization_schema():
     assert norm["canonical_url"] == "https://linkedin.com/jobs/view/123456"
     assert norm["source"] == "linkedin"
 
+def test_glassdoor_normalization():
+    glassdoor_raw = {
+        "job_id": "1010298094310",
+        "job_title": "Engineer - Java Full Stack Developer",
+        "company_name": "Cardinal Health, Inc.",
+        "job_location": {
+            "city": "bengaluru",
+            "state": "Karnataka",
+            "country": "India"
+        },
+        "job_description": "<p>We are seeking a <b>Java Full Stack Developer</b>.</p>",
+        "job_salary": {
+            "currency": "INR",
+            "currency_symbol": "₹",
+            "pay_period": "annual",
+            "min": 400000,
+            "max": 800000
+        },
+        "job_apply_url": "https://www.glassdoor.co.in/partner/jobListing.htm?jl=1010298094310",
+        "job_type_labels": ["Full-time"]
+    }
+    norm = job_normalizer.normalize(glassdoor_raw, source="glassdoor")
+    assert norm["job_title"] == "Engineer - Java Full Stack Developer"
+    assert norm["company_name"] == "Cardinal Health, Inc."
+    assert "Bengaluru, Karnataka, India" in norm["location"]
+    assert "₹400000 - ₹800000 INR / annual" in norm["salary_raw"]
+    assert norm["canonical_url"] == "https://www.glassdoor.co.in/partner/jobListing.htm"
+    assert norm["source"] == "glassdoor"
+    assert norm["employment_type"] == "full-time"
+
 def test_deduplication():
     session = SyncSessionLocal()
     try:

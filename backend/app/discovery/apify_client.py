@@ -164,8 +164,41 @@ Qualifications:
             print(f"[Apify] Google Jobs Scraper notice: {e}")
         return jobs
 
+    def discover_jobs_from_glassdoor(self, query: str, location: str, max_items: int = 15) -> List[Dict[str, Any]]:
+        """Scrapes live job postings from Glassdoor India using bebity/glassdoor-jobs-scraper."""
+        if not self.client:
+            return []
+        jobs: List[Dict[str, Any]] = []
+        try:
+            actor_id = getattr(settings, "GLASSDOOR_ACTOR_ID", "bebity/glassdoor-jobs-scraper")
+            target_loc = location if location.lower() not in ["all over india", "pan-india", "any"] else "India"
+            run_input = {
+                "keyword": query,
+                "location": target_loc,
+                "country": "https://www.glassdoor.co.in",
+                "postedWithinDays": "7",
+                "employmentType": ["Full-time"],
+                "scrapeDetails": True,
+                "maxItems": max(max_items, 5)
+            }
+            print(f"[Apify] Executing Glassdoor Scraper ('{actor_id}') with keyword='{query}', location='{target_loc}'...")
+            run = self.client.actor(actor_id).call(run_input=run_input)
+            dataset_id = (
+                getattr(run, "default_dataset_id", None) or 
+                getattr(run, "defaultDatasetId", None) or 
+                (run.get("defaultDatasetId") if hasattr(run, "get") else None)
+            )
+            if dataset_id:
+                items = self.client.dataset(dataset_id).list_items().items
+                for item in items:
+                    jobs.append(job_normalizer.normalize(item, source="glassdoor"))
+            print(f"[Apify] Glassdoor: Successfully retrieved {len(jobs)} jobs.")
+        except Exception as e:
+            print(f"[Apify] Glassdoor Scraper notice: {e}")
+        return jobs
+
     def discover_jobs(self, search_queries: List[str], locations: List[str], max_items: int = 10) -> List[Dict[str, Any]]:
-        """Executes Naukri and Google Jobs scrapers, returning combined deduplicated job feed."""
+        """Executes multi-source scrapers (Naukri, Glassdoor, Google Jobs), returning combined deduplicated job feed."""
         if not self.client:
             print("Apify token not provided or client unavailable. Using validated live sample feed.")
             return self.get_sample_live_jobs()
@@ -176,11 +209,16 @@ Qualifications:
 
         discovered: List[Dict[str, Any]] = []
 
-        # 1. Primary: Naukri Jobs Scraper (India's premier job portal)
+        # 1. Primary India Job Portal: Naukri
         naukri_jobs = self.discover_jobs_from_naukri(query=query, location=loc, max_items=max_items)
         discovered.extend(naukri_jobs)
 
-        # 2. Secondary: Google Jobs Scraper (combines LinkedIn, career sites, etc.)
+        # 2. Company Ratings & Salaries Intelligence: Glassdoor India
+        if len(discovered) < max_items or getattr(settings, "MULTI_SOURCE_DISCOVERY", True):
+            glassdoor_jobs = self.discover_jobs_from_glassdoor(query=query, location=loc, max_items=max_items)
+            discovered.extend(glassdoor_jobs)
+
+        # 3. Cross-Portal Aggregator: Google Jobs (LinkedIn, Career Sites, Greenhouse, Lever)
         if len(discovered) < max_items or getattr(settings, "MULTI_SOURCE_DISCOVERY", True):
             google_jobs = self.discover_jobs_from_google(query=query, location=loc, max_items=max_items)
             discovered.extend(google_jobs)

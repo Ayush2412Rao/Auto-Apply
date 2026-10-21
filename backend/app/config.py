@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     DEFAULT_ACTOR_ID: str = "valig/naukri-jobs-scraper"
     NAUKRI_ACTOR_ID: str = "valig/naukri-jobs-scraper"
     GOOGLE_JOBS_ACTOR_ID: str = "johnvc/google-jobs-scraper"
+    GLASSDOOR_ACTOR_ID: str = "bebity/glassdoor-jobs-scraper"
     MULTI_SOURCE_DISCOVERY: bool = True
 
     EMAIL_PROVIDER: str = "smtp"

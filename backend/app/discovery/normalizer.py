@@ -37,20 +37,30 @@ class JobNormalizer:
         else:
             company = raw_job.get("company_name") or raw_company or raw_job.get("companyName") or "Unknown"
 
-        # Location handling (supports string or nested list from Naukri)
+        # Location handling (supports string, nested list from Naukri, or dict from Glassdoor)
         raw_locations = raw_job.get("locations")
+        raw_loc_obj = raw_job.get("job_location")
         if isinstance(raw_locations, list) and raw_locations:
             labels = [l.get("label") for l in raw_locations if isinstance(l, dict) and l.get("label")]
             location = ", ".join(labels) if labels else "India"
+        elif isinstance(raw_loc_obj, dict):
+            loc_parts = []
+            if raw_loc_obj.get("city"):
+                loc_parts.append(str(raw_loc_obj.get("city")).title())
+            if raw_loc_obj.get("state"):
+                loc_parts.append(str(raw_loc_obj.get("state")).title())
+            if raw_loc_obj.get("country"):
+                loc_parts.append(str(raw_loc_obj.get("country")))
+            location = ", ".join(loc_parts) if loc_parts else str(raw_loc_obj.get("unknown") or "India")
         else:
             location = raw_job.get("location") or raw_job.get("formattedLocation") or raw_job.get("place") or "India"
 
-        # Description handling (supports string or nested dict with HTML from Naukri)
-        raw_desc = raw_job.get("description")
+        # Description handling (supports string or nested dict with HTML from Naukri/Glassdoor)
+        raw_desc = raw_job.get("description") or raw_job.get("job_description")
         if isinstance(raw_desc, dict):
             desc_text = raw_desc.get("full") or raw_desc.get("short") or ""
         else:
-            desc_text = raw_desc or raw_job.get("job_description") or raw_job.get("text") or ""
+            desc_text = raw_desc or raw_job.get("job_description_html") or raw_job.get("text") or ""
         description = cls.clean_text(desc_text)
         
         # In Google Jobs scraper, job_highlights has structured Qualifications / Responsibilities
@@ -80,8 +90,16 @@ class JobNormalizer:
             if skill_lines:
                 description = description + "\n\n" + "\n".join(skill_lines)
 
-        # URL extraction (Naukri has 'url' directly, Google Jobs has apply_options)
-        url = raw_job.get("url") or raw_job.get("link") or raw_job.get("job_url") or raw_job.get("applyUrl") or ""
+        # URL extraction (Naukri has 'url' directly, Glassdoor has job_apply_url/job_url, Google Jobs has apply_options)
+        url = (
+            raw_job.get("job_apply_url") or 
+            raw_job.get("url") or 
+            raw_job.get("job_url") or 
+            raw_job.get("link") or 
+            raw_job.get("applyUrl") or 
+            raw_job.get("job_seo_url") or 
+            ""
+        )
         apply_options = raw_job.get("apply_options") or []
         if not url and isinstance(apply_options, list) and apply_options:
             best_link = None
@@ -103,7 +121,9 @@ class JobNormalizer:
 
         # Determine posting source platform
         via = raw_job.get("via") or ""
-        if "naukri" in url.lower() or "naukri" in source.lower():
+        if "glassdoor" in url.lower() or "glassdoor" in source.lower():
+            source_label = "glassdoor"
+        elif "naukri" in url.lower() or "naukri" in source.lower():
             source_label = "naukri"
         elif via:
             source_label = f"google_jobs ({via})"
@@ -112,26 +132,45 @@ class JobNormalizer:
 
         canonical_url = cls.generate_canonical_url(source_label, url, company, title)
         
-        # Remote / WFH detection (Naukri wfhType: 2 = Remote, 3 = Hybrid, 0 = Office)
+        # Remote / WFH detection (Naukri wfhType: 2 = Remote, 3 = Hybrid, 0 = Office; Glassdoor: job_remote)
         wfh_type = str(raw_job.get("wfhType", ""))
         is_remote = bool(
             wfh_type == "2" or
             "remote" in location.lower() or 
             raw_job.get("isRemote", False) or 
             raw_job.get("remote", False) or
+            raw_job.get("job_remote", False) or
             "work from home" in description[:500].lower()
         )
 
         detected_ext = raw_job.get("detected_extensions") or {}
         schedule = detected_ext.get("schedule_type") if isinstance(detected_ext, dict) else None
-        employment_type = str(schedule or raw_job.get("employmentType") or raw_job.get("jobType") or "full-time").lower()
+        types = raw_job.get("job_type_labels") or raw_job.get("job_types") or []
+        employment_type = (
+            str(types[0]).lower() if (isinstance(types, list) and types)
+            else str(schedule or raw_job.get("employmentType") or raw_job.get("jobType") or "full-time").lower()
+        )
 
-        # Salary extraction (handles dict from Naukri or string)
-        raw_sal = raw_job.get("salary")
+        # Salary extraction (handles dict from Naukri, Glassdoor, or string)
+        raw_sal = raw_job.get("salary") or raw_job.get("job_salary")
         if isinstance(raw_sal, dict):
-            salary_raw = raw_sal.get("label") or f"{raw_sal.get('minimum', '')} - {raw_sal.get('maximum', '')} {raw_sal.get('currency', 'INR')}"
+            min_val = raw_sal.get("minimum") or raw_sal.get("min")
+            max_val = raw_sal.get("maximum") or raw_sal.get("max")
+            curr = raw_sal.get("currency") or "INR"
+            sym = raw_sal.get("currency_symbol") or ("₹" if curr == "INR" else "")
+            if min_val and max_val:
+                period = f" / {raw_sal.get('pay_period')}" if raw_sal.get("pay_period") else ""
+                salary_raw = f"{sym}{min_val} - {sym}{max_val} {curr}{period}"
+            elif raw_sal.get("label"):
+                salary_raw = raw_sal.get("label")
+            elif min_val:
+                salary_raw = f"{sym}{min_val} {curr}"
+            else:
+                salary_raw = None
         else:
             salary_raw = str(raw_sal or raw_job.get("salaryRange") or "")
+            if not salary_raw:
+                salary_raw = None
 
         return {
             "source": source_label,
