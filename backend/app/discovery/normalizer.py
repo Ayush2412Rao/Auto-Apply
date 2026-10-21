@@ -27,14 +27,31 @@ class JobNormalizer:
 
     @classmethod
     def normalize(cls, raw_job: Dict[str, Any], source: str = "apify") -> Dict[str, Any]:
-        """Normalizes diverse scraper outputs (Google Jobs, LinkedIn, Indeed) into a standardized schema."""
+        """Normalizes diverse scraper outputs (Naukri, Google Jobs, LinkedIn, Indeed) into a standardized schema."""
         title = raw_job.get("title") or raw_job.get("job_title") or raw_job.get("positionName") or "Software Engineer"
-        company = raw_job.get("company_name") or raw_job.get("company") or raw_job.get("companyName") or "Unknown"
-        location = raw_job.get("location") or raw_job.get("formattedLocation") or raw_job.get("place") or "Remote"
         
-        description = cls.clean_text(
-            raw_job.get("description") or raw_job.get("job_description") or raw_job.get("text") or ""
-        )
+        # Company name handling (supports string or nested dict from Naukri)
+        raw_company = raw_job.get("company")
+        if isinstance(raw_company, dict):
+            company = raw_company.get("name") or "Unknown"
+        else:
+            company = raw_job.get("company_name") or raw_company or raw_job.get("companyName") or "Unknown"
+
+        # Location handling (supports string or nested list from Naukri)
+        raw_locations = raw_job.get("locations")
+        if isinstance(raw_locations, list) and raw_locations:
+            labels = [l.get("label") for l in raw_locations if isinstance(l, dict) and l.get("label")]
+            location = ", ".join(labels) if labels else "India"
+        else:
+            location = raw_job.get("location") or raw_job.get("formattedLocation") or raw_job.get("place") or "India"
+
+        # Description handling (supports string or nested dict with HTML from Naukri)
+        raw_desc = raw_job.get("description")
+        if isinstance(raw_desc, dict):
+            desc_text = raw_desc.get("full") or raw_desc.get("short") or ""
+        else:
+            desc_text = raw_desc or raw_job.get("job_description") or raw_job.get("text") or ""
+        description = cls.clean_text(desc_text)
         
         # In Google Jobs scraper, job_highlights has structured Qualifications / Responsibilities
         highlights = raw_job.get("job_highlights") or []
@@ -50,7 +67,20 @@ class JobNormalizer:
             if highlight_lines:
                 description = description + "\n" + "\n".join(highlight_lines)
 
-        # In Google Jobs scraper, apply_options contains list of direct links
+        # In Naukri scraper, skills has preferred and other arrays
+        skills_obj = raw_job.get("skills")
+        if isinstance(skills_obj, dict):
+            pref = skills_obj.get("preferred") or []
+            oth = skills_obj.get("other") or []
+            skill_lines = []
+            if pref:
+                skill_lines.append(f"Key Technical Skills: {', '.join(pref)}")
+            if oth:
+                skill_lines.append(f"Additional Skills: {', '.join(oth)}")
+            if skill_lines:
+                description = description + "\n\n" + "\n".join(skill_lines)
+
+        # URL extraction (Naukri has 'url' directly, Google Jobs has apply_options)
         url = raw_job.get("url") or raw_job.get("link") or raw_job.get("job_url") or raw_job.get("applyUrl") or ""
         apply_options = raw_job.get("apply_options") or []
         if not url and isinstance(apply_options, list) and apply_options:
@@ -73,11 +103,19 @@ class JobNormalizer:
 
         # Determine posting source platform
         via = raw_job.get("via") or ""
-        source_label = f"google_jobs ({via})" if via else source
+        if "naukri" in url.lower() or "naukri" in source.lower():
+            source_label = "naukri"
+        elif via:
+            source_label = f"google_jobs ({via})"
+        else:
+            source_label = source
 
-        canonical_url = cls.generate_canonical_url(source, url, company, title)
+        canonical_url = cls.generate_canonical_url(source_label, url, company, title)
         
+        # Remote / WFH detection (Naukri wfhType: 2 = Remote, 3 = Hybrid, 0 = Office)
+        wfh_type = str(raw_job.get("wfhType", ""))
         is_remote = bool(
+            wfh_type == "2" or
             "remote" in location.lower() or 
             raw_job.get("isRemote", False) or 
             raw_job.get("remote", False) or
@@ -88,7 +126,12 @@ class JobNormalizer:
         schedule = detected_ext.get("schedule_type") if isinstance(detected_ext, dict) else None
         employment_type = str(schedule or raw_job.get("employmentType") or raw_job.get("jobType") or "full-time").lower()
 
-        salary_raw = str(raw_job.get("salary") or raw_job.get("salaryRange") or "")
+        # Salary extraction (handles dict from Naukri or string)
+        raw_sal = raw_job.get("salary")
+        if isinstance(raw_sal, dict):
+            salary_raw = raw_sal.get("label") or f"{raw_sal.get('minimum', '')} - {raw_sal.get('maximum', '')} {raw_sal.get('currency', 'INR')}"
+        else:
+            salary_raw = str(raw_sal or raw_job.get("salaryRange") or "")
 
         return {
             "source": source_label,

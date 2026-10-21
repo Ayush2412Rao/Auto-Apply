@@ -31,7 +31,10 @@ class Settings(BaseSettings):
 
     APIFY_API_TOKEN: str = ""
     APIFY_TOKEN: str = ""
-    DEFAULT_ACTOR_ID: str = "johnvc/google-jobs-scraper"
+    DEFAULT_ACTOR_ID: str = "valig/naukri-jobs-scraper"
+    NAUKRI_ACTOR_ID: str = "valig/naukri-jobs-scraper"
+    GOOGLE_JOBS_ACTOR_ID: str = "johnvc/google-jobs-scraper"
+    MULTI_SOURCE_DISCOVERY: bool = True
 
     EMAIL_PROVIDER: str = "smtp"
     SMTP_HOST: str = "smtp.gmail.com"

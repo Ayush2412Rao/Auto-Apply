@@ -99,53 +99,94 @@ Qualifications:
         ]
         return [job_normalizer.normalize(j, source="sample_feed") for j in sample_raw]
 
-    def discover_jobs(self, search_queries: List[str], locations: List[str], max_items: int = 10) -> List[Dict[str, Any]]:
-        """Executes Apify Actor if token is present, or returns normalized sample feed."""
+    def discover_jobs_from_naukri(self, query: str, location: str, max_items: int = 15) -> List[Dict[str, Any]]:
+        """Scrapes live job postings from Naukri.com using valig/naukri-jobs-scraper."""
         if not self.client:
-            print("Apify token not provided or client unavailable. Using validated live sample feed.")
-            return self.get_sample_live_jobs()
-
-        discovered: List[Dict[str, Any]] = []
+            return []
+        jobs: List[Dict[str, Any]] = []
         try:
-            query = search_queries[0] if search_queries else "Software Engineer"
-            raw_loc = locations[0] if locations else "India"
-            loc = "India" if raw_loc.lower() in ["all over india", "pan-india", "any"] else raw_loc
-            
-            if "google-jobs" in settings.DEFAULT_ACTOR_ID.lower() or "ckldy9gaqf6qlp6gp" in settings.DEFAULT_ACTOR_ID.lower():
-                run_input = {
-                    "query": query,
-                    "location": loc,
-                    "country": "in",
-                    "google_domain": "google.co.in",
-                    "posted_within": "7d",
-                    "num_results": max(max_items, 10),
-                    "max_pagination": 2
-                }
-            else:
-                run_input = {
-                    "keywords": query,
-                    "location": loc,
-                    "maxJobs": max_items
-                }
-            
-            print(f"Executing Apify Actor '{settings.DEFAULT_ACTOR_ID}' with query='{query}', location='{loc}'...")
-            run = self.client.actor(settings.DEFAULT_ACTOR_ID).call(run_input=run_input)
-            
-            # Support both dataclass/object and dict response from apify-client
+            actor_id = getattr(settings, "NAUKRI_ACTOR_ID", "valig/naukri-jobs-scraper")
+            run_input = {
+                "keywords": query,
+                "location": location,
+                "sort": "f",
+                "experience": 1,
+                "jobAge": "7",
+                "wfhType": ["0", "2", "3"],
+                "jobPostType": ["1"],
+                "limit": max_items
+            }
+            print(f"[Apify] Executing Naukri Scraper ('{actor_id}') with keywords='{query}', location='{location}'...")
+            run = self.client.actor(actor_id).call(run_input=run_input)
             dataset_id = (
                 getattr(run, "default_dataset_id", None) or 
                 getattr(run, "defaultDatasetId", None) or 
                 (run.get("defaultDatasetId") if hasattr(run, "get") else None)
             )
-            
             if dataset_id:
-                dataset_items = self.client.dataset(dataset_id).list_items().items
-                for item in dataset_items:
-                    normalized = job_normalizer.normalize(item, source="google_jobs")
-                    discovered.append(normalized)
-            print(f"Apify: Successfully retrieved {len(discovered)} jobs from Actor run.")
+                items = self.client.dataset(dataset_id).list_items().items
+                for item in items:
+                    jobs.append(job_normalizer.normalize(item, source="naukri"))
+            print(f"[Apify] Naukri: Successfully retrieved {len(jobs)} jobs.")
         except Exception as e:
-            print(f"Apify Actor execution notice: {e}. Falling back to validated live feed.")
+            print(f"[Apify] Naukri Scraper notice: {e}")
+        return jobs
+
+    def discover_jobs_from_google(self, query: str, location: str, max_items: int = 15) -> List[Dict[str, Any]]:
+        """Scrapes live job postings from Google Jobs using johnvc/google-jobs-scraper."""
+        if not self.client:
+            return []
+        jobs: List[Dict[str, Any]] = []
+        try:
+            actor_id = getattr(settings, "GOOGLE_JOBS_ACTOR_ID", "johnvc/google-jobs-scraper")
+            run_input = {
+                "query": query,
+                "location": location,
+                "country": "in",
+                "google_domain": "google.co.in",
+                "posted_within": "7d",
+                "num_results": max(max_items, 10),
+                "max_pagination": 2
+            }
+            print(f"[Apify] Executing Google Jobs Scraper ('{actor_id}') with query='{query}', location='{location}'...")
+            run = self.client.actor(actor_id).call(run_input=run_input)
+            dataset_id = (
+                getattr(run, "default_dataset_id", None) or 
+                getattr(run, "defaultDatasetId", None) or 
+                (run.get("defaultDatasetId") if hasattr(run, "get") else None)
+            )
+            if dataset_id:
+                items = self.client.dataset(dataset_id).list_items().items
+                for item in items:
+                    jobs.append(job_normalizer.normalize(item, source="google_jobs"))
+            print(f"[Apify] Google Jobs: Successfully retrieved {len(jobs)} jobs.")
+        except Exception as e:
+            print(f"[Apify] Google Jobs Scraper notice: {e}")
+        return jobs
+
+    def discover_jobs(self, search_queries: List[str], locations: List[str], max_items: int = 10) -> List[Dict[str, Any]]:
+        """Executes Naukri and Google Jobs scrapers, returning combined deduplicated job feed."""
+        if not self.client:
+            print("Apify token not provided or client unavailable. Using validated live sample feed.")
+            return self.get_sample_live_jobs()
+
+        query = search_queries[0] if search_queries else "Software Engineer"
+        raw_loc = locations[0] if locations else "India"
+        loc = "India" if raw_loc.lower() in ["all over india", "pan-india", "any"] else raw_loc
+
+        discovered: List[Dict[str, Any]] = []
+
+        # 1. Primary: Naukri Jobs Scraper (India's premier job portal)
+        naukri_jobs = self.discover_jobs_from_naukri(query=query, location=loc, max_items=max_items)
+        discovered.extend(naukri_jobs)
+
+        # 2. Secondary: Google Jobs Scraper (combines LinkedIn, career sites, etc.)
+        if len(discovered) < max_items or getattr(settings, "MULTI_SOURCE_DISCOVERY", True):
+            google_jobs = self.discover_jobs_from_google(query=query, location=loc, max_items=max_items)
+            discovered.extend(google_jobs)
+
+        if not discovered:
+            print("[Apify] No listings returned from live scrapers. Falling back to validated live feed.")
             discovered = self.get_sample_live_jobs()
 
         return discovered
