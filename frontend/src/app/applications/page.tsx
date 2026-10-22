@@ -79,13 +79,13 @@ export default function ApplicationsPage() {
       {/* Kanban Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Column 1: Awaiting Approval */}
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800 flex flex-col">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-4">
+        <div className="glass-panel p-5 rounded-2xl border border-white/10 flex flex-col">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-400" />
+              <Clock className="w-4 h-4 text-[#FF2D95]" />
               <h3 className="font-bold text-sm text-white">Pending Approval</h3>
             </div>
-            <span className="text-xs bg-amber-500/10 text-amber-400 font-bold px-2 py-0.5 rounded-full border border-amber-500/20">
+            <span className="text-xs bg-[#FF2D95]/10 text-[#FF2D95] font-bold px-2 py-0.5 rounded-full border border-[#FF2D95]/30">
               {pendingApps.length}
             </span>
           </div>
@@ -95,7 +95,7 @@ export default function ApplicationsPage() {
               <p className="text-xs text-slate-500 text-center py-8">No applications awaiting approval.</p>
             ) : (
               pendingApps.map(app => (
-                <div key={app.id} className="p-4 rounded-xl bg-slate-900 border border-slate-800 shadow-sm">
+                <div key={app.id} className="p-4 rounded-xl bg-[#121216] border border-white/10 shadow-sm hover:border-[#007BA7]/30 transition-all">
                   <div className="flex items-start justify-between">
                     <div>
                       <h4 className="font-semibold text-slate-200 text-sm">{app.title}</h4>
@@ -104,19 +104,19 @@ export default function ApplicationsPage() {
                         {app.company}
                       </p>
                     </div>
-                    <span className="text-xs font-bold text-indigo-400">{app.match_score ?? 85}%</span>
+                    <span className="text-xs font-bold text-[#FF2D95]">{app.match_score ?? 85}%</span>
                   </div>
 
-                  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-800/80">
+                  <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5">
                     <button
                       onClick={() => handleApprove(app.id)}
-                      className="flex-1 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-1.5 rounded-lg transition-colors"
+                      className="flex-1 text-xs bg-gradient-to-r from-[#007BA7] to-[#0092c4] hover:from-[#008dbf] hover:to-[#FF2D95] text-white font-medium py-1.5 rounded-lg transition-all shadow-md shadow-[#007BA7]/20 cursor-pointer"
                     >
                       Approve & Submit
                     </button>
                     <button
                       onClick={() => handleReject(app.id)}
-                      className="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-slate-700 transition-colors"
+                      className="text-xs bg-[#181820] hover:bg-[#202028] text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-white/10 transition-colors cursor-pointer"
                     >
                       Reject
                     </button>
@@ -128,13 +128,13 @@ export default function ApplicationsPage() {
         </div>
 
         {/* Column 2: Submitted / Applied */}
-        <div className="glass-panel p-5 rounded-2xl border border-slate-800 flex flex-col md:col-span-2">
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800/80 mb-4">
+        <div className="glass-panel p-5 rounded-2xl border border-white/10 flex flex-col md:col-span-2">
+          <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+              <CheckCircle2 className="w-4 h-4 text-[#007BA7]" />
               <h3 className="font-bold text-sm text-white">Applied & Verified</h3>
             </div>
-            <span className="text-xs bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">
+            <span className="text-xs bg-[#007BA7]/10 text-[#007BA7] font-bold px-2 py-0.5 rounded-full border border-[#007BA7]/30">
               {appliedApps.length}
             </span>
           </div>
@@ -144,7 +144,7 @@ export default function ApplicationsPage() {
               <p className="text-xs text-slate-500 text-center py-8">No applications submitted yet.</p>
             ) : (
               appliedApps.map(app => (
-                <div key={app.id} className="p-4 rounded-xl bg-slate-900 border border-slate-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div key={app.id} className="p-4 rounded-xl bg-[#121216] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#007BA7]/30 transition-all">
                   <div>
                     <div className="flex items-center gap-2">
                       <h4 className="font-semibold text-slate-200 text-sm">{app.title}</h4>
@@ -161,12 +161,12 @@ export default function ApplicationsPage() {
                       <span>•</span>
                       <span>{app.location}</span>
                       <span>•</span>
-                      <span className="text-indigo-400 font-semibold">Match: {app.match_score ?? 85}%</span>
+                      <span className="text-[#FF2D95] font-semibold">Match: {app.match_score ?? 85}%</span>
                     </div>
 
                     {app.evidence && (
-                      <div className="mt-2 text-[11px] text-slate-500 bg-slate-950/60 px-2.5 py-1 rounded border border-slate-800/60 inline-block">
-                        Confirmation: <code className="text-slate-300 font-mono">{app.evidence.confirmation_code || 'VERIFIED'}</code>
+                      <div className="mt-2 text-[11px] text-slate-400 bg-[#0A0A0A] px-2.5 py-1 rounded border border-white/10 inline-block">
+                        Confirmation: <code className="text-[#007BA7] font-mono font-medium">{app.evidence.confirmation_code || 'VERIFIED'}</code>
                       </div>
                     )}
                   </div>

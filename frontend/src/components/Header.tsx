@@ -29,7 +29,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   };
 
   return (
-    <header className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-slate-800/80 gap-4">
+    <header className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-white/10 gap-4">
       <div>
         <h2 className="text-2xl font-bold text-white tracking-tight">{title}</h2>
         {subtitle && <p className="text-sm text-slate-400 mt-1">{subtitle}</p>}
@@ -37,16 +37,16 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
       <div className="flex items-center gap-3">
         {/* Scheduler Status Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-slate-300">
-          <Clock className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Hourly Scheduler: <strong className="text-emerald-400">Active (Asia/Kolkata)</strong></span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#121216] border border-white/10 text-xs text-slate-300">
+          <Clock className="w-3.5 h-3.5 text-[#007BA7]" />
+          <span>Hourly Scheduler: <strong className="text-[#007BA7]">Active (Asia/Kolkata)</strong></span>
         </div>
 
         {/* Trigger Button */}
         <button
           onClick={handleRunNow}
           disabled={isRunning}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white text-sm font-medium shadow-md shadow-indigo-600/20 disabled:opacity-50 transition-all cursor-pointer"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#007BA7] via-[#0092c4] to-[#FF2D95] hover:opacity-95 text-white text-sm font-semibold shadow-lg shadow-[#007BA7]/30 hover:shadow-[#FF2D95]/30 disabled:opacity-50 transition-all cursor-pointer active:scale-[0.98]"
         >
           {isRunning ? (
             <>
@@ -62,7 +62,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
         </button>
 
         {message && (
-          <span className="text-xs text-emerald-400 flex items-center gap-1 animate-fade-in">
+          <span className="text-xs text-[#FF2D95] font-semibold flex items-center gap-1 animate-fade-in">
             <CheckCircle2 className="w-3.5 h-3.5" />
             {message}
           </span>

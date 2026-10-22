@@ -27,17 +27,17 @@ export default function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-64 glass-panel border-r border-slate-800 flex flex-col justify-between h-screen fixed left-0 top-0 z-30">
+    <aside className="w-64 glass-panel border-r border-white/10 flex flex-col justify-between h-screen fixed left-0 top-0 z-30 bg-[#0A0A0A]/90">
       <div>
         {/* Brand */}
-        <div className="p-6 border-b border-slate-800/60 flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+        <div className="p-6 border-b border-white/10 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#007BA7] to-[#FF2D95] flex items-center justify-center shadow-lg shadow-[#007BA7]/30">
             <Bot className="w-6 h-6 text-white" />
           </div>
           <div>
             <h1 className="font-bold text-lg text-white tracking-tight flex items-center gap-1.5">
               Auto-Apply
-              <span className="text-[10px] bg-indigo-500/20 text-indigo-300 font-semibold px-1.5 py-0.5 rounded border border-indigo-500/30">AI</span>
+              <span className="text-[10px] bg-[#FF2D95]/15 text-[#FF2D95] font-extrabold px-1.5 py-0.5 rounded border border-[#FF2D95]/30">AI</span>
             </h1>
             <p className="text-xs text-slate-400">Agentic Career Engine</p>
           </div>
@@ -52,13 +52,13 @@ export default function Sidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-medium transition-all ${
+                className={`group flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all ${
                   isActive
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-600/25'
-                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                    ? 'bg-gradient-to-r from-[#007BA7] to-[#005c7d] text-white shadow-lg shadow-[#007BA7]/25 border-l-4 border-[#FF2D95]'
+                    : 'text-slate-400 hover:text-white hover:bg-white/[0.04]'
                 }`}
               >
-                <Icon className={`w-4.5 h-4.5 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                <Icon className={`w-4.5 h-4.5 transition-colors ${isActive ? 'text-white' : 'text-slate-400 group-hover:text-[#007BA7]'}`} />
                 {item.name}
               </Link>
             );
@@ -67,15 +67,15 @@ export default function Sidebar() {
       </div>
 
       {/* Candidate Footer */}
-      <div className="p-4 border-t border-slate-800/60 m-3 rounded-xl bg-slate-900/60 border border-slate-800">
+      <div className="p-4 m-3 rounded-2xl bg-[#121216] border border-white/10 shadow-inner">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-slate-800 border border-indigo-500/40 flex items-center justify-center text-indigo-400 font-semibold text-sm">
+          <div className="w-9 h-9 rounded-full bg-[#181820] border border-[#007BA7]/50 flex items-center justify-center text-[#007BA7] font-bold text-sm shadow-sm">
             AR
           </div>
           <div className="overflow-hidden">
             <p className="text-sm font-semibold text-slate-200 truncate">Ayush Rao</p>
-            <p className="text-xs text-emerald-400 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <p className="text-xs text-[#FF2D95] flex items-center gap-1.5 font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF2D95] animate-pulse"></span>
               Auto-Apply Active
             </p>
           </div>
