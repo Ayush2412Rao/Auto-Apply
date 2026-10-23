@@ -43,8 +43,9 @@ export default function AgentActivityPage() {
   };
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <Header 
+        tag="EXECUTION TELEMETRY"
         title="Agent Activity & Audit Logs" 
         subtitle="Real-time execution telemetry of the LangGraph state machine, ChromaDB retrieval, and applications." 
       />

@@ -69,8 +69,9 @@ export default function SettingsPage() {
   };
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <Header 
+        tag="POLICY & INTEGRATIONS"
         title="Settings & Policy" 
         subtitle="Configure target roles, locations, automation thresholds, and integrations." 
       />

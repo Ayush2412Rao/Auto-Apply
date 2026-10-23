@@ -2,71 +2,72 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --color-cyan: #00E5FF;
+  --color-rose: #FF2D95;
+}
 
 body {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: #090A0F;
+  background-color: #050508;
   color: #f1f5f9;
   overflow-x: hidden;
 }
 
 /* Custom sleek scrollbars */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
-  background: #090A0F;
+  background: #050508;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f232e;
+  background: #191c26;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #2a3142;
+  background: #00E5FF;
 }
 
 ::selection {
-  background-color: rgba(0, 123, 167, 0.3);
-  color: #7dd3fc;
+  background-color: rgba(255, 45, 149, 0.3);
+  color: #ff85c2;
 }
 
-/* Minimalist Clean Aesthetic Surfaces */
+/* Glowing headline typography matching reference image */
+.glow-cyan-text {
+  color: #00E5FF;
+  text-shadow: 0 0 45px rgba(0, 229, 255, 0.65), 0 0 90px rgba(0, 229, 255, 0.3);
+}
+
+.glow-rose-text {
+  color: #FF2D95;
+  text-shadow: 0 0 45px rgba(255, 45, 149, 0.65), 0 0 90px rgba(255, 45, 149, 0.3);
+}
+
+/* Seamless cards - No clunky blocks, just pure elegance */
 .glass-panel {
-  background: rgba(15, 18, 26, 0.7);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.3);
+  background: rgba(10, 12, 18, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 .glass-card {
-  background: rgba(18, 22, 32, 0.55);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 2px 12px -1px rgba(0, 0, 0, 0.2);
-  transition: all 0.2s ease-in-out;
+  background: rgba(12, 15, 23, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
-  background: rgba(22, 28, 42, 0.7);
-  border-color: rgba(0, 123, 167, 0.35);
-  transform: translateY(-1px);
-}
-
-.glass-card-neon:hover {
-  background: rgba(26, 22, 36, 0.7);
-  border-color: rgba(255, 45, 149, 0.35);
-  transform: translateY(-1px);
-}
-
-/* Clean Accent Glows */
-.glow-cerulean {
-  box-shadow: 0 0 20px -4px rgba(0, 123, 167, 0.3);
-}
-
-.glow-neon {
-  box-shadow: 0 0 20px -4px rgba(255, 45, 149, 0.3);
+  background: rgba(16, 20, 32, 0.7);
+  border-color: rgba(0, 229, 255, 0.35);
+  box-shadow: 0 10px 30px -5px rgba(0, 229, 255, 0.15);
+  transform: translateY(-2px);
 }

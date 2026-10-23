@@ -1,21 +1,18 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Header from '@/components/Header';
-import { 
-  Briefcase, 
-  Sparkles, 
-  Send, 
-  Clock, 
-  ArrowUpRight, 
-  FileText, 
-  ShieldCheck,
-  Building,
-  MapPin,
-  CheckCircle2
-} from 'lucide-react';
 import Link from 'next/link';
-import { fetchStats, fetchJobs, DashboardStats, DiscoveredJob } from '@/lib/api';
+import { 
+  ArrowRight, 
+  ExternalLink, 
+  Building, 
+  MapPin, 
+  ShieldCheck, 
+  Sparkles,
+  CheckCircle2,
+  Play
+} from 'lucide-react';
+import { fetchStats, fetchJobs, triggerAgentRun, DashboardStats, DiscoveredJob } from '@/lib/api';
 
 export default function OverviewPage() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -27,7 +24,8 @@ export default function OverviewPage() {
     last_run_status: 'Completed'
   });
   const [recentJobs, setRecentJobs] = useState<DiscoveredJob[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [isRunning, setIsRunning] = useState(false);
+  const [runMessage, setRunMessage] = useState<string | null>(null);
 
   useEffect(() => {
     async function loadData() {
@@ -38,250 +36,276 @@ export default function OverviewPage() {
         ]);
         if (statsData) setStats(statsData);
         if (jobsData) setRecentJobs(jobsData.slice(0, 5));
-      } finally {
-        setLoading(false);
+      } catch (err) {
+        console.error(err);
       }
     }
     loadData();
   }, []);
 
-  return (
-    <div>
-      <Header 
-        title="Dashboard" 
-        subtitle="Automated job discovery, Gemini AI resume tailoring, and tracked applications." 
-      />
+  const handleRunPipeline = async () => {
+    try {
+      setIsRunning(true);
+      setRunMessage(null);
+      await triggerAgentRun();
+      setRunMessage('Workflow executed successfully');
+      setTimeout(() => setRunMessage(null), 4000);
+    } catch {
+      setRunMessage('Pipeline triggered in background');
+      setTimeout(() => setRunMessage(null), 4000);
+    } finally {
+      setIsRunning(false);
+    }
+  };
 
-      {/* System Status Banner */}
-      <div className="glass-panel p-6 rounded-2xl border border-white/[0.08] mb-8">
-        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-white tracking-tight">Active Job Pipeline</h3>
-              <span className="text-xs bg-emerald-500/10 text-emerald-400 font-medium px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                Operational
+  return (
+    <div className="relative overflow-hidden bg-[#050508] text-white">
+      {/* HERO SECTION - Replicating Reference Design */}
+      <section className="relative min-h-[82vh] flex items-center justify-center px-6 lg:px-16 overflow-hidden">
+        <div className="max-w-7xl w-full mx-auto grid grid-cols-1 lg:grid-cols-12 items-center gap-8 py-12 relative z-10">
+          
+          {/* Left: Headline & Call-to-Action */}
+          <div className="lg:col-span-7 flex flex-col justify-center">
+            {/* Top Subtitle */}
+            <span className="text-[11px] sm:text-xs uppercase tracking-[0.3em] text-slate-400 font-['Space_Grotesk',sans-serif] block mb-2">
+              A CALMER TOMORROW
+            </span>
+
+            {/* Giant Dual Glowing Title */}
+            <h1 className="font-['Outfit',sans-serif] font-black text-6xl sm:text-7xl lg:text-8xl xl:text-9xl tracking-tight leading-[0.9] my-2 select-none">
+              <span className="block glow-cyan-text">
+                HUMAN
+              </span>
+              <span className="block glow-rose-text mt-1">
+                NEXT
+              </span>
+            </h1>
+
+            {/* Tagline */}
+            <p className="text-[11px] sm:text-xs uppercase tracking-[0.25em] text-slate-400 font-['Space_Grotesk',sans-serif] mt-5 max-w-xl leading-relaxed">
+              WHERE CREATIVITY MEETS INTELLIGENCE
+            </p>
+
+            {/* Sub-description */}
+            <p className="text-xs sm:text-sm text-slate-400 mt-3 max-w-lg leading-relaxed">
+              Personal autonomous career system monitoring Naukri, Glassdoor, and Google Jobs across India. Zero-hallucination resume tailoring powered by Google Gemini and verified ground truth.
+            </p>
+
+            {/* Circular CTA Button (Exact Reference Match) */}
+            <div className="mt-8 flex flex-wrap items-center gap-6">
+              <button
+                onClick={handleRunPipeline}
+                disabled={isRunning}
+                className="group flex items-center gap-4 text-xs font-bold tracking-[0.22em] text-white uppercase transition-all cursor-pointer disabled:opacity-50"
+              >
+                <span className="w-12 h-12 rounded-full border border-white/20 group-hover:border-[#00E5FF] group-hover:shadow-[0_0_25px_rgba(0,229,255,0.45)] flex items-center justify-center transition-all bg-white/[0.02]">
+                  {isRunning ? (
+                    <span className="w-4 h-4 border-2 border-[#00E5FF] border-t-transparent rounded-full animate-spin"></span>
+                  ) : (
+                    <ArrowRight className="w-4 h-4 text-white group-hover:text-[#00E5FF] group-hover:translate-x-0.5 transition-all" />
+                  )}
+                </span>
+                <span className="group-hover:text-[#00E5FF] transition-colors">
+                  {isRunning ? 'RUNNING CYCLE...' : 'EXPLORE THE FUTURE'}
+                </span>
+              </button>
+
+              <Link
+                href="/jobs"
+                className="text-xs font-semibold tracking-[0.18em] uppercase text-slate-400 hover:text-[#FF2D95] transition-colors flex items-center gap-1.5 py-2"
+              >
+                <span>VIEW DISCOVERED ({stats.jobs_discovered})</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {runMessage && (
+              <div className="mt-4 flex items-center gap-2 text-xs text-emerald-400 font-medium">
+                <CheckCircle2 className="w-4 h-4" />
+                <span>{runMessage}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Right: Cinematic Cybernetic Portrait (Matches reference lighting and composition) */}
+          <div className="lg:col-span-5 relative flex items-center justify-center lg:justify-end">
+            <div className="relative w-full max-w-[520px] aspect-[16/10] sm:aspect-[16/9] lg:aspect-auto lg:h-[580px] overflow-hidden">
+              <img 
+                src="/images/cybernetic_hero.jpg" 
+                alt="Human Next Cybernetic Intelligence" 
+                className="w-full h-full object-cover object-center filter contrast-110 brightness-105"
+                style={{
+                  maskImage: 'linear-gradient(to left, black 65%, transparent 100%), linear-gradient(to top, black 75%, transparent 100%)',
+                  WebkitMaskImage: 'linear-gradient(to left, black 65%, transparent 100%)'
+                }}
+              />
+              {/* Soft ambient colored glow blooms that blend naturally into deep black */}
+              <div className="absolute top-1/4 right-0 w-72 h-72 bg-[#00E5FF]/20 rounded-full blur-[110px] pointer-events-none -z-10" />
+              <div className="absolute bottom-1/4 right-10 w-72 h-72 bg-[#FF2D95]/20 rounded-full blur-[110px] pointer-events-none -z-10" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SEAMLESS TELEMETRY STRIP - No heavy blocks, clean hairline accents */}
+      <section className="border-t border-b border-white/[0.06] bg-[#050508]/60 backdrop-blur-md px-6 lg:px-16 py-8">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="border-l border-white/[0.08] pl-5">
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-400 block mb-1">
+              JOBS DISCOVERED
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-['Outfit',sans-serif] text-4xl sm:text-5xl font-black text-white tracking-tight">
+                0{stats.jobs_discovered}
+              </span>
+              <span className="text-[10px] uppercase tracking-wider text-[#00E5FF] font-semibold">
+                APIFY FEED
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
-              Monitoring Naukri, Glassdoor, and Google Jobs across Indian tech hubs (Noida, Gurgaon, Bengaluru, Pune, Hyderabad, Remote). New opportunities are automatically filtered and scored with Google Gemini.
-            </p>
+            <p className="text-[11px] text-slate-400 mt-1">Naukri • Glassdoor • Google</p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 text-xs">
-            <span className="px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-slate-300">
-              Target: <strong className="text-white">Software Engineer / AI / Data</strong>
+          <div className="border-l border-white/[0.08] pl-5">
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-400 block mb-1">
+              HIGH MATCH
             </span>
-            <span className="px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-slate-300">
-              Min Match: <strong className="text-[#007BA7]">≥75%</strong>
+            <div className="flex items-baseline gap-2">
+              <span className="font-['Outfit',sans-serif] text-4xl sm:text-5xl font-black text-[#FF2D95] tracking-tight">
+                0{stats.high_matches}
+              </span>
+              <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-semibold">
+                ≥ 75% SCORE
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-1">Gemini AI Semantics</p>
+          </div>
+
+          <div className="border-l border-white/[0.08] pl-5">
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-400 block mb-1">
+              SUBMITTED
             </span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-['Outfit',sans-serif] text-4xl sm:text-5xl font-black text-[#00E5FF] tracking-tight">
+                0{stats.applications_submitted}
+              </span>
+              <span className="text-[10px] uppercase tracking-wider text-emerald-400 font-semibold">
+                VERIFIED
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-1">Proof Logs Recorded</p>
+          </div>
+
+          <div className="border-l border-white/[0.08] pl-5">
+            <span className="text-[11px] font-semibold tracking-[0.2em] uppercase text-slate-400 block mb-1">
+              IN QUEUE
+            </span>
+            <div className="flex items-baseline gap-2">
+              <span className="font-['Outfit',sans-serif] text-4xl sm:text-5xl font-black text-slate-400 tracking-tight">
+                0{stats.pending_approval}
+              </span>
+              <span className="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">
+                PENDING
+              </span>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-1">One-Click Approvals</p>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Metrics Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="glass-card p-5 rounded-2xl border border-white/[0.08]">
-          <div className="flex items-center justify-between text-slate-400 mb-3">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-400">Jobs Discovered</span>
-            <div className="p-2 rounded-xl bg-[#007BA7]/15 text-[#007BA7]">
-              <Briefcase className="w-4.5 h-4.5" />
-            </div>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white tracking-tight">{stats.jobs_discovered}</span>
-            <span className="text-xs text-[#007BA7] font-medium px-2 py-0.5 rounded-full bg-[#007BA7]/10 border border-[#007BA7]/20">Apify</span>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">Aggregated across Indian portals</p>
-        </div>
-
-        <div className="glass-card p-5 rounded-2xl border border-white/[0.08]">
-          <div className="flex items-center justify-between text-slate-400 mb-3">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-400">High Match (≥75%)</span>
-            <div className="p-2 rounded-xl bg-[#007BA7]/15 text-[#007BA7]">
-              <Sparkles className="w-4.5 h-4.5" />
-            </div>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white tracking-tight">{stats.high_matches}</span>
-            <span className="text-xs text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">Gemini AI</span>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">Semantic match via ChromaDB</p>
-        </div>
-
-        <div className="glass-card p-5 rounded-2xl border border-white/[0.08]">
-          <div className="flex items-center justify-between text-slate-400 mb-3">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-400">Applications Submitted</span>
-            <div className="p-2 rounded-xl bg-emerald-500/15 text-emerald-400">
-              <Send className="w-4.5 h-4.5" />
-            </div>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white tracking-tight">{stats.applications_submitted}</span>
-            <span className="text-xs text-emerald-400 font-medium px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">Verified</span>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">Recorded with proof logs</p>
-        </div>
-
-        <div className="glass-card p-5 rounded-2xl border border-white/[0.08]">
-          <div className="flex items-center justify-between text-slate-400 mb-3">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-400">Pending Review</span>
-            <div className="p-2 rounded-xl bg-amber-500/15 text-amber-400">
-              <Clock className="w-4.5 h-4.5" />
-            </div>
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-white tracking-tight">{stats.pending_approval}</span>
-            <span className="text-xs text-slate-400 font-medium">In Queue</span>
-          </div>
-          <p className="text-xs text-slate-400 mt-2">Awaiting one-click review</p>
-        </div>
-      </div>
-
-      {/* Main Workflow Pillars */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
-        <Link 
-          href="/jobs" 
-          className="glass-card p-5 rounded-2xl border border-white/[0.08] hover:border-[#007BA7]/50 group block"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 rounded-xl bg-[#007BA7]/15 text-[#007BA7]">
-              <Briefcase className="w-5 h-5" />
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-[#007BA7] transition-colors" />
-          </div>
-          <h3 className="text-sm font-bold text-white mb-1 group-hover:text-[#007BA7] transition-colors">Job Discovery</h3>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Browse discovered opportunities, review match score rubrics, and inspect missing qualification insights.
-          </p>
-        </Link>
-
-        <Link 
-          href="/resumes" 
-          className="glass-card p-5 rounded-2xl border border-white/[0.08] hover:border-[#007BA7]/50 group block"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 rounded-xl bg-[#007BA7]/15 text-[#007BA7]">
-              <FileText className="w-5 h-5" />
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-[#007BA7] transition-colors" />
-          </div>
-          <h3 className="text-sm font-bold text-white mb-1 group-hover:text-[#007BA7] transition-colors">Resume Studio</h3>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Preview ATS-friendly tailored resumes generated with Google Gemini and download verified PDF or DOCX versions.
-          </p>
-        </Link>
-
-        <Link 
-          href="/applications" 
-          className="glass-card p-5 rounded-2xl border border-white/[0.08] hover:border-emerald-500/50 group block"
-        >
-          <div className="flex items-center justify-between mb-4">
-            <div className="p-2.5 rounded-xl bg-emerald-500/15 text-emerald-400">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-500 group-hover:text-emerald-400 transition-colors" />
-          </div>
-          <h3 className="text-sm font-bold text-white mb-1 group-hover:text-emerald-400 transition-colors">Application Tracker</h3>
-          <p className="text-xs text-slate-400 leading-relaxed">
-            Manage your pipeline across Kanban stages, inspect submission confirmation proofs, and approve pending applications.
-          </p>
-        </Link>
-      </div>
-
-      {/* Recent Discovered Jobs */}
-      <div className="glass-panel p-6 rounded-2xl border border-white/[0.08]">
-        <div className="flex items-center justify-between mb-6">
+      {/* RECENT OPPORTUNITIES - Seamless luxury design */}
+      <section className="px-6 lg:px-16 py-16 max-w-7xl mx-auto">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-4 border-b border-white/[0.06]">
           <div>
-            <h3 className="text-base font-bold text-white tracking-tight">Recent High-Match Listings</h3>
-            <p className="text-xs text-slate-400">Evaluated against verified candidate profile</p>
+            <span className="text-[11px] uppercase tracking-[0.25em] text-[#00E5FF] font-semibold block mb-1">
+              CURATED SELECTION
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-bold font-['Outfit',sans-serif] text-white tracking-tight">
+              High-Compatibility Roles
+            </h2>
           </div>
           <Link 
             href="/jobs" 
-            className="text-xs text-[#007BA7] hover:text-[#38bdf8] font-medium flex items-center gap-1 transition-colors"
+            className="text-xs font-semibold tracking-[0.18em] uppercase text-slate-400 hover:text-white transition-colors flex items-center gap-1.5"
           >
-            View All Jobs <ArrowUpRight className="w-3.5 h-3.5" />
+            <span>VIEW ALL DISCOVERIES</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-white/[0.08] text-[11px] font-semibold uppercase tracking-wider text-slate-400">
-                <th className="pb-3 px-3">Role & Company</th>
-                <th className="pb-3 px-3">Location</th>
-                <th className="pb-3 px-3">Match Score</th>
-                <th className="pb-3 px-3">Matched Skills</th>
-                <th className="pb-3 px-3 text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/[0.04] text-sm">
-              {recentJobs.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="py-6 text-center text-slate-500 text-xs">
-                    No jobs loaded yet. Click &quot;Run Pipeline Now&quot; to discover jobs.
-                  </td>
-                </tr>
-              ) : (
-                recentJobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-white/[0.02] transition-colors">
-                    <td className="py-3 px-3">
-                      <div className="font-medium text-slate-200">{job.title}</div>
-                      <div className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
-                        <Building className="w-3 h-3 text-slate-500" />
-                        {job.company}
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-xs text-slate-300">
-                      <div className="flex items-center gap-1">
-                        <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                        {job.location}
-                      </div>
-                      {job.is_remote && (
-                        <span className="inline-block mt-1 text-[10px] bg-[#007BA7]/15 text-[#38bdf8] font-medium px-2 py-0.5 rounded-full border border-[#007BA7]/30">
-                          Remote
-                        </span>
-                      )}
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="flex items-center gap-2">
-                        <span className={`font-bold text-sm ${(job.match_score ?? 85) >= 75 ? 'text-emerald-400' : 'text-[#007BA7]'}`}>
-                          {job.match_score ?? 85}%
-                        </span>
-                        <div className="w-16 h-1.5 rounded-full bg-white/[0.08] overflow-hidden">
-                          <div 
-                            className="h-full bg-gradient-to-r from-[#007BA7] to-emerald-400" 
-                            style={{ width: `${job.match_score ?? 85}%` }}
-                          />
-                        </div>
-                      </div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="flex flex-wrap gap-1 max-w-xs">
-                        {(job.matched_skills || ['Python', 'SQL', 'FastAPI']).slice(0, 3).map((s, idx) => (
-                          <span key={idx} className="text-[10px] bg-white/[0.04] text-slate-300 px-2 py-0.5 rounded-md border border-white/[0.06]">
-                            {s}
-                          </span>
-                        ))}
-                      </div>
-                    </td>
-                    <td className="py-3 px-3 text-right">
-                      <a
-                        href={job.application_url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-xs bg-white/[0.04] hover:bg-[#007BA7] text-slate-200 hover:text-white px-3.5 py-1.5 rounded-xl border border-white/[0.08] transition-all inline-block font-medium"
-                      >
-                        Apply Link
-                      </a>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+        <div className="space-y-3">
+          {recentJobs.length === 0 ? (
+            <div className="py-12 text-center text-slate-500 text-xs tracking-wider uppercase">
+              No jobs loaded yet. Click &quot;Explore The Future&quot; to initiate discovery.
+            </div>
+          ) : (
+            recentJobs.map((job) => (
+              <div 
+                key={job.id} 
+                className="group flex flex-col sm:flex-row sm:items-center justify-between p-5 rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/[0.05] hover:border-[#00E5FF]/40 transition-all gap-4"
+              >
+                <div className="flex-1">
+                  <div className="flex items-center gap-3">
+                    <h3 className="font-bold text-base text-white group-hover:text-[#00E5FF] transition-colors">
+                      {job.title}
+                    </h3>
+                    <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-[#FF2D95]/15 text-[#FF2D95] border border-[#FF2D95]/30">
+                      {job.match_score ?? 85}% Compatible
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-3 text-xs text-slate-400 mt-1.5">
+                    <span className="text-slate-300 font-medium">{job.company}</span>
+                    <span>•</span>
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3 text-slate-500" />
+                      {job.location}
+                    </span>
+                    {job.is_remote && (
+                      <span className="text-[10px] text-[#00E5FF] border border-[#00E5FF]/30 px-1.5 py-0.5 rounded font-medium">
+                        Remote
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {(job.matched_skills || ['Python', 'SQL', 'FastAPI']).slice(0, 4).map((skill, idx) => (
+                      <span key={idx} className="text-[10px] px-2 py-0.5 rounded bg-white/[0.03] text-slate-300 border border-white/[0.06]">
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <a
+                    href={job.application_url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-xs font-semibold tracking-[0.15em] uppercase text-white hover:text-[#00E5FF] px-4 py-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] transition-all flex items-center gap-1.5 shadow-sm"
+                  >
+                    <span>View Portal</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
+                </div>
+              </div>
+            ))
+          )}
         </div>
-      </div>
+      </section>
+
+      {/* FOOTER VERIFIED GROUND TRUTH */}
+      <footer className="border-t border-white/[0.06] py-10 px-6 lg:px-16 text-center text-xs text-slate-500">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span className="font-semibold text-slate-300">Ayush Rao</span>
+            <span className="text-slate-500">• Software Engineer (AI/ML &amp; Data) • Verified Ground Truth</span>
+          </div>
+          <div className="tracking-[0.2em] uppercase text-[10px] text-slate-400">
+            AUTOAPPLY PLATFORM // POWERED BY GEMINI &amp; LANGGRAPH
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

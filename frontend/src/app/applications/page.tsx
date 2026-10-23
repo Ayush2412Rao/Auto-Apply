@@ -58,8 +58,9 @@ export default function ApplicationsPage() {
   const pendingApps = applications.filter(a => a.status === 'pending_approval');
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <Header 
+        tag="PIPELINE KANBAN"
         title="Application Tracker" 
         subtitle="Manage submissions, review pending items, and inspect verification evidence." 
       />

@@ -1,10 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import Sidebar from '@/components/Sidebar';
+import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
-  title: 'Auto-Apply | Automated Job Search Platform',
-  description: 'Personal automated job discovery and application platform powered by LangGraph, ChromaDB, Gemini, and Apify.',
+  title: 'AutoApply // Autonomous Career Intelligence',
+  description: 'Next-generation personal AI job discovery and application platform powered by LangGraph, ChromaDB, Gemini, and Apify.',
 };
 
 export default function RootLayout({
@@ -14,15 +14,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className="min-h-screen bg-[#090A0F] text-slate-100 antialiased selection:bg-[#007BA7]/30 selection:text-[#38bdf8] relative overflow-x-hidden">
-        <div className="flex">
-          <Sidebar />
-          <main className="ml-64 flex-1 p-8 min-h-screen">
-            <div className="max-w-7xl mx-auto">
-              {children}
-            </div>
-          </main>
-        </div>
+      <body className="min-h-screen bg-[#050508] text-slate-100 antialiased selection:bg-[#FF2D95]/30 selection:text-[#FF2D95] relative overflow-x-hidden">
+        <Navbar />
+        <main className="pt-20 min-h-screen">
+          {children}
+        </main>
       </body>
     </html>
   );

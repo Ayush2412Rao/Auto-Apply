@@ -35,8 +35,9 @@ export default function ResumeStudioPage() {
   }, []);
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <Header 
+        tag="DOCUMENT STUDIO"
         title="Resume Studio" 
         subtitle="Master profile source-of-truth and ATS-tailored resume versions generated with Gemini." 
       />

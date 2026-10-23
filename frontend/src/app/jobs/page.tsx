@@ -40,8 +40,9 @@ export default function JobDiscoveryPage() {
   }, [search, minScore]);
 
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-6 lg:px-12 py-8">
       <Header 
+        tag="LIVE PORTAL FEED"
         title="Job Discovery" 
         subtitle="Live opportunities aggregated via Apify and matched with your verified profile." 
       />
