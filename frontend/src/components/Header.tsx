@@ -1,9 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Play, CheckCircle2, Clock, Sparkles } from 'lucide-react';
+import { Play, CheckCircle2, Clock } from 'lucide-react';
 import { triggerAgentRun } from '@/lib/api';
-import { soundFx } from '@/lib/soundFx';
 
 interface HeaderProps {
   title: string;
@@ -16,15 +15,12 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
   const handleRunNow = async () => {
     try {
-      soundFx.playEngage();
       setIsRunning(true);
       setMessage(null);
       await triggerAgentRun();
-      soundFx.playChirp();
-      setMessage('Workflow triggered!');
+      setMessage('Workflow triggered successfully');
       setTimeout(() => setMessage(null), 4000);
-    } catch (err: any) {
-      soundFx.playChirp();
+    } catch {
       setMessage('Triggered background run');
       setTimeout(() => setMessage(null), 4000);
     } finally {
@@ -33,7 +29,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
   };
 
   return (
-    <header className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-white/10 gap-4">
+    <header className="flex flex-col sm:flex-row sm:items-center justify-between pb-6 mb-6 border-b border-white/[0.08] gap-4">
       <div>
         <h2 className="text-2xl font-bold text-white tracking-tight">{title}</h2>
         {subtitle && <p className="text-sm text-slate-400 mt-1">{subtitle}</p>}
@@ -41,16 +37,16 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
       <div className="flex items-center gap-3">
         {/* Scheduler Status Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] text-xs text-slate-300 font-mono shadow-sm">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] border border-white/[0.08] text-xs text-slate-300">
           <Clock className="w-3.5 h-3.5 text-[#007BA7]" />
-          <span>Hourly Scheduler: <strong className="text-[#007BA7]">Active (Asia/Kolkata)</strong></span>
+          <span>Hourly Scheduler: <strong className="text-emerald-400 font-medium">Active</strong></span>
         </div>
 
         {/* Trigger Button */}
         <button
           onClick={handleRunNow}
           disabled={isRunning}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#007BA7] via-[#0092c4] to-[#FF2D95] hover:opacity-95 text-white text-sm font-semibold shadow-lg shadow-[#007BA7]/30 hover:shadow-[#FF2D95]/30 disabled:opacity-50 transition-all cursor-pointer active:scale-[0.98]"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#007BA7] hover:bg-[#006e96] text-white text-sm font-medium shadow-sm disabled:opacity-50 transition-all cursor-pointer"
         >
           {isRunning ? (
             <>
@@ -59,14 +55,14 @@ export default function Header({ title, subtitle }: HeaderProps) {
             </>
           ) : (
             <>
-              <Play className="w-4 h-4 fill-current" />
+              <Play className="w-3.5 h-3.5 fill-current" />
               <span>Run Pipeline Now</span>
             </>
           )}
         </button>
 
         {message && (
-          <span className="text-xs text-[#FF2D95] font-semibold flex items-center gap-1 animate-fade-in">
+          <span className="text-xs text-emerald-400 font-medium flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5" />
             {message}
           </span>

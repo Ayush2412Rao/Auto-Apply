@@ -5,151 +5,68 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #0A0A0A;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: #090A0F;
   color: #f1f5f9;
   overflow-x: hidden;
 }
 
-/* Custom scrollbars */
+/* Custom sleek scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: #090A0F;
 }
 ::-webkit-scrollbar-thumb {
-  background: #24242d;
+  background: #1f232e;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #007BA7;
+  background: #2a3142;
 }
 
 ::selection {
-  background-color: rgba(255, 45, 149, 0.28);
-  color: #ff94cb;
+  background-color: rgba(0, 123, 167, 0.3);
+  color: #7dd3fc;
 }
 
+/* Minimalist Clean Aesthetic Surfaces */
 .glass-panel {
-  background: linear-gradient(135deg, rgba(14, 18, 28, 0.42) 0%, rgba(8, 10, 16, 0.30) 100%);
-  backdrop-filter: blur(24px) saturate(190%);
-  -webkit-backdrop-filter: blur(24px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.32), inset 0 1px 0 0 rgba(255, 255, 255, 0.08);
+  background: rgba(15, 18, 26, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 4px 24px -2px rgba(0, 0, 0, 0.3);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(22, 26, 38, 0.30) 0%, rgba(10, 12, 18, 0.18) 100%);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
+  background: rgba(18, 22, 32, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 6px 24px -2px rgba(0, 0, 0, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 12px -1px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
 }
 
 .glass-card:hover {
-  background: linear-gradient(135deg, rgba(0, 123, 167, 0.14) 0%, rgba(14, 18, 28, 0.32) 100%);
-  border-color: rgba(0, 123, 167, 0.45);
-  box-shadow: 0 12px 36px -8px rgba(0, 123, 167, 0.25), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
+  background: rgba(22, 28, 42, 0.7);
+  border-color: rgba(0, 123, 167, 0.35);
+  transform: translateY(-1px);
 }
 
 .glass-card-neon:hover {
-  background: linear-gradient(135deg, rgba(255, 45, 149, 0.14) 0%, rgba(14, 18, 28, 0.32) 100%);
-  border-color: rgba(255, 45, 149, 0.5);
-  box-shadow: 0 12px 36px -8px rgba(255, 45, 149, 0.3), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
+  background: rgba(26, 22, 36, 0.7);
+  border-color: rgba(255, 45, 149, 0.35);
+  transform: translateY(-1px);
 }
 
+/* Clean Accent Glows */
 .glow-cerulean {
-  box-shadow: 0 0 25px -4px rgba(0, 123, 167, 0.4);
+  box-shadow: 0 0 20px -4px rgba(0, 123, 167, 0.3);
 }
 
 .glow-neon {
-  box-shadow: 0 0 25px -4px rgba(255, 45, 149, 0.4);
-}
-
-/* Sci-Fi Cybernetic Grid Background */
-.cyber-grid {
-  background-size: 36px 36px;
-  background-image: 
-    linear-gradient(to right, rgba(0, 123, 167, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 123, 167, 0.04) 1px, transparent 1px);
-}
-
-/* Refined Sleek Holographic Corner Accents */
-.hud-bracket {
-  position: relative;
-}
-.hud-bracket::before {
-  content: '';
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  width: 6px;
-  height: 6px;
-  border-top: 1.5px solid rgba(0, 123, 167, 0.85);
-  border-left: 1.5px solid rgba(0, 123, 167, 0.85);
-  pointer-events: none;
-  z-index: 10;
-}
-.hud-bracket::after {
-  content: '';
-  position: absolute;
-  bottom: -1px;
-  right: -1px;
-  width: 6px;
-  height: 6px;
-  border-bottom: 1.5px solid rgba(255, 45, 149, 0.85);
-  border-right: 1.5px solid rgba(255, 45, 149, 0.85);
-  pointer-events: none;
-  z-index: 10;
-}
-
-/* JARVIS Rotational Keyframes */
-@keyframes spinSlow {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
-@keyframes spinReverse {
-  from { transform: rotate(360deg); }
-  to { transform: rotate(0deg); }
-}
-
-@keyframes radarSweep {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.35; filter: drop-shadow(0 0 8px rgba(0, 123, 167, 0.5)); }
-  50% { opacity: 0.95; filter: drop-shadow(0 0 20px rgba(255, 45, 149, 0.8)); }
-}
-
-@keyframes scanPing {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2.4); opacity: 0; }
-}
-
-.animate-spin-slow {
-  animation: spinSlow 18s linear infinite;
-}
-
-.animate-spin-reverse {
-  animation: spinReverse 24s linear infinite;
-}
-
-.animate-radar {
-  animation: radarSweep 4s linear infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
-}
-
-.animate-scan-ping {
-  animation: scanPing 1.8s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  box-shadow: 0 0 20px -4px rgba(255, 45, 149, 0.3);
 }

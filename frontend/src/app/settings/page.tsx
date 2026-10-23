@@ -3,10 +3,8 @@
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import { 
-  Settings as SettingsIcon, 
   Shield, 
   Sliders, 
-  Sparkles, 
   CheckCircle2, 
   Save, 
   Key, 
@@ -15,7 +13,6 @@ import {
   Bot
 } from 'lucide-react';
 import { fetchPreferences, updatePreferences } from '@/lib/api';
-import { soundFx } from '@/lib/soundFx';
 
 export default function SettingsPage() {
   const [preferences, setPreferences] = useState({
@@ -63,9 +60,8 @@ export default function SettingsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      soundFx.playChirp();
       await updatePreferences(preferences);
-      setSavedMessage('Settings successfully saved to database!');
+      setSavedMessage('Settings successfully saved to database.');
       setTimeout(() => setSavedMessage(null), 3000);
     } catch (e) {
       console.error(e);
@@ -75,12 +71,12 @@ export default function SettingsPage() {
   return (
     <div>
       <Header 
-        title="Settings & Application Policy" 
-        subtitle="Configure your target roles, locations, automation thresholds, and integration settings." 
+        title="Settings & Policy" 
+        subtitle="Configure target roles, locations, automation thresholds, and integrations." 
       />
 
       {savedMessage && (
-        <div className="mb-6 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-semibold flex items-center gap-2">
+        <div className="mb-6 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" />
           {savedMessage}
         </div>
@@ -88,13 +84,13 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Automation Mode Selector */}
-        <div className="glass-panel hud-bracket p-6 rounded-2xl border border-white/10">
-          <div className="flex items-center gap-2 mb-2 font-mono">
+        <div className="glass-panel p-6 rounded-2xl border border-white/[0.08]">
+          <div className="flex items-center gap-2 mb-2">
             <Shield className="w-5 h-5 text-[#007BA7]" />
             <h3 className="text-base font-bold text-white">Automation Submission Policy</h3>
           </div>
-          <p className="text-xs text-slate-400 mb-4 font-mono">
-            Select how Auto-Apply handles submissions after generating and validating tailored resumes.
+          <p className="text-xs text-slate-400 mb-4">
+            Select how AutoApply handles submissions after generating and validating tailored resumes.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -102,7 +98,7 @@ export default function SettingsPage() {
               {
                 mode: 'automatic',
                 title: 'Automatic Submission',
-                desc: 'Submits automatically when match score ≥ threshold and verified answers exist.'
+                desc: 'Submits automatically when match score ≥ threshold and verified qualifications exist.'
               },
               {
                 mode: 'approval_required',
@@ -119,24 +115,21 @@ export default function SettingsPage() {
               return (
                 <div
                   key={item.mode}
-                  onClick={() => {
-                    soundFx.playClick();
-                    setPreferences({ ...preferences, automation_mode: item.mode });
-                  }}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer hud-bracket ${
+                  onClick={() => setPreferences({ ...preferences, automation_mode: item.mode })}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer ${
                     isSelected 
-                      ? 'bg-[#007BA7]/15 backdrop-blur-md border-[#007BA7] shadow-lg shadow-[#007BA7]/15 ring-1 ring-[#007BA7]/50' 
-                      : 'bg-white/[0.03] backdrop-blur-md border-white/[0.08] hover:border-[#007BA7]/30 hover:bg-white/[0.05]'
+                      ? 'bg-[#007BA7]/10 border-[#007BA7] shadow-sm' 
+                      : 'bg-white/[0.02] border-white/[0.06] hover:border-[#007BA7]/30'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
-                    <h4 className="font-bold text-sm text-slate-200">{item.title}</h4>
+                    <h4 className="font-semibold text-sm text-slate-200">{item.title}</h4>
                     <input 
                       type="radio" 
                       name="automation_mode" 
                       checked={isSelected} 
                       onChange={() => {}} 
-                      className="accent-[#FF2D95]" 
+                      className="accent-[#007BA7]" 
                     />
                   </div>
                   <p className="text-xs text-slate-400 leading-relaxed">{item.desc}</p>
@@ -147,7 +140,7 @@ export default function SettingsPage() {
         </div>
 
         {/* Search & Matching Criteria */}
-        <div className="glass-panel p-6 rounded-2xl border border-white/10">
+        <div className="glass-panel p-6 rounded-2xl border border-white/[0.08]">
           <div className="flex items-center gap-2 mb-4">
             <Sliders className="w-5 h-5 text-[#007BA7]" />
             <h3 className="text-base font-bold text-white">Search Preferences & Match Limits</h3>
@@ -163,7 +156,7 @@ export default function SettingsPage() {
                   ...preferences, 
                   target_titles: e.target.value.split(',').map(s => s.trim()).filter(Boolean) 
                 })}
-                className="w-full p-3 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 focus:bg-white/[0.06] transition-all"
+                className="w-full p-3 bg-white/[0.02] border border-white/[0.08] rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/30 transition-all"
               />
             </div>
 
@@ -176,13 +169,13 @@ export default function SettingsPage() {
                   ...preferences, 
                   preferred_locations: e.target.value.split(',').map(s => s.trim()).filter(Boolean) 
                 })}
-                className="w-full p-3 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 focus:bg-white/[0.06] transition-all"
+                className="w-full p-3 bg-white/[0.02] border border-white/[0.08] rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/30 transition-all"
               />
             </div>
 
             <div>
               <label className="block text-slate-300 font-semibold mb-1.5">
-                Minimum Match Score for Auto-Apply: <strong className="text-[#FF2D95] font-bold">{preferences.min_match_score}%</strong>
+                Minimum Match Score for Auto-Apply: <strong className="text-[#007BA7] font-semibold">{preferences.min_match_score}%</strong>
               </label>
               <input
                 type="range"
@@ -191,7 +184,7 @@ export default function SettingsPage() {
                 step="5"
                 value={preferences.min_match_score}
                 onChange={(e) => setPreferences({ ...preferences, min_match_score: Number(e.target.value) })}
-                className="w-full accent-[#FF2D95] cursor-pointer"
+                className="w-full accent-[#007BA7] cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-slate-500 mt-1">
                 <span>50% (Permissive)</span>
@@ -206,51 +199,51 @@ export default function SettingsPage() {
                 type="text"
                 value="Immediate / 15 days or less"
                 readOnly
-                className="w-full p-2.5 bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] rounded-xl text-slate-400 cursor-not-allowed"
+                className="w-full p-2.5 bg-white/[0.02] border border-white/[0.04] rounded-xl text-slate-400 cursor-not-allowed"
               />
             </div>
           </div>
         </div>
 
         {/* Integration Status Cards */}
-        <div className="glass-panel p-6 rounded-2xl border border-white/10">
+        <div className="glass-panel p-6 rounded-2xl border border-white/[0.08]">
           <h3 className="text-base font-bold text-white mb-4">Connected Integrations</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#FF2D95]/30 hover:bg-white/[0.05] transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#007BA7]/30 transition-all">
               <div className="flex items-center gap-2 mb-2">
-                <Bot className="w-4 h-4 text-[#FF2D95]" />
-                <span className="font-bold text-slate-200">Google Gemini</span>
+                <Bot className="w-4 h-4 text-[#007BA7]" />
+                <span className="font-semibold text-slate-200">Google Gemini</span>
               </div>
               <p className="text-slate-400 text-[11px]">Model: <strong>gemini-3.8-flash</strong></p>
-              <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● Authenticated</span>
+              <span className="text-[10px] text-emerald-400 font-medium mt-2 inline-block">● Authenticated</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/30 hover:bg-white/[0.05] transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#007BA7]/30 transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Key className="w-4 h-4 text-[#007BA7]" />
-                <span className="font-bold text-slate-200">Apify API</span>
+                <span className="font-semibold text-slate-200">Apify API</span>
               </div>
               <p className="text-slate-400 text-[11px]">Actor: <strong>Multi-Source Scraper</strong></p>
-              <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● Token Configured</span>
+              <span className="text-[10px] text-emerald-400 font-medium mt-2 inline-block">● Token Configured</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/30 hover:bg-white/[0.05] transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#007BA7]/30 transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Mail className="w-4 h-4 text-[#007BA7]" />
-                <span className="font-bold text-slate-200">Gmail SMTP</span>
+                <span className="font-semibold text-slate-200">Gmail SMTP</span>
               </div>
               <p className="text-slate-400 text-[11px]">User: <strong>ayushrao786420...</strong></p>
-              <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● SMTP Ready</span>
+              <span className="text-[10px] text-emerald-400 font-medium mt-2 inline-block">● SMTP Ready</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#FF2D95]/30 hover:bg-white/[0.05] transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#007BA7]/30 transition-all">
               <div className="flex items-center gap-2 mb-2">
-                <Database className="w-4 h-4 text-[#FF2D95]" />
-                <span className="font-bold text-slate-200">ChromaDB</span>
+                <Database className="w-4 h-4 text-[#007BA7]" />
+                <span className="font-semibold text-slate-200">ChromaDB</span>
               </div>
               <p className="text-slate-400 text-[11px]">Vector Storage: <strong>./data/chromadb</strong></p>
-              <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● 26 Chunks Ingested</span>
+              <span className="text-[10px] text-emerald-400 font-medium mt-2 inline-block">● 26 Chunks Ingested</span>
             </div>
           </div>
         </div>
@@ -258,7 +251,7 @@ export default function SettingsPage() {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#007BA7] via-[#0092c4] to-[#FF2D95] hover:from-[#008dbf] hover:to-[#ff1a8c] text-white text-sm font-semibold shadow-lg shadow-[#007BA7]/25 transition-all cursor-pointer"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#007BA7] hover:bg-[#006e96] text-white text-xs font-semibold shadow-sm transition-all cursor-pointer"
           >
             <Save className="w-4 h-4" />
             <span>Save Preferences</span>
