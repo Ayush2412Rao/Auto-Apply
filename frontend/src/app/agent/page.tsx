@@ -11,9 +11,12 @@ import {
   Sparkles, 
   Layers, 
   Send, 
-  Cpu
+  Cpu,
+  Radio,
+  Crosshair
 } from 'lucide-react';
 import { fetchLatestRun, triggerAgentRun } from '@/lib/api';
+import { soundFx } from '@/lib/soundFx';
 
 export default function AgentActivityPage() {
   const [latestRun, setLatestRun] = useState<any>(null);
@@ -38,9 +41,11 @@ export default function AgentActivityPage() {
   }, []);
 
   const handleManualTrigger = async () => {
+    soundFx.playEngage();
     setIsTriggering(true);
     try {
       await triggerAgentRun();
+      soundFx.playChirp();
       setTimeout(loadRun, 1500);
     } finally {
       setIsTriggering(false);
@@ -55,11 +60,17 @@ export default function AgentActivityPage() {
       />
 
       {/* Pipeline Architecture Visualizer */}
-      <div className="glass-panel p-6 rounded-2xl border border-white/10 mb-8">
-        <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4 flex items-center gap-2">
-          <Cpu className="w-4 h-4 text-[#007BA7]" />
-          LangGraph Workflow Pipeline
-        </h3>
+      <div className="glass-panel hud-bracket p-6 rounded-2xl border border-white/10 mb-8 relative overflow-hidden">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2 font-mono">
+            <Cpu className="w-4 h-4 text-[#007BA7]" />
+            LangGraph Autonomous Agent State Machine
+          </h3>
+          <span className="text-[11px] font-mono text-[#007BA7] flex items-center gap-1.5">
+            <Radio className="w-3.5 h-3.5 text-[#FF2D95] animate-pulse" />
+            SYNAPSE FREQUENCY: 15min
+          </span>
+        </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
@@ -70,14 +81,18 @@ export default function AgentActivityPage() {
             { name: '5. Policy Route', desc: 'Auto / Approval Rule', active: true },
             { name: '6. Submission', desc: 'Evidence & DB Commit', active: true },
           ].map((stage, idx) => (
-            <div key={idx} className="p-3.5 rounded-xl bg-[#121216] border border-white/10 flex flex-col justify-between hover:border-[#007BA7]/40 transition-colors">
+            <div 
+              key={idx} 
+              onClick={() => soundFx.playClick()}
+              className="p-3.5 rounded-xl bg-[#121216] border border-white/10 flex flex-col justify-between hover:border-[#007BA7]/60 hover:shadow-lg hover:shadow-[#007BA7]/15 transition-all cursor-pointer group"
+            >
               <div>
-                <span className="text-xs font-bold text-slate-200 block">{stage.name}</span>
+                <span className="text-xs font-bold text-slate-200 block group-hover:text-[#007BA7] transition-colors">{stage.name}</span>
                 <span className="text-[11px] text-slate-400 mt-0.5 block">{stage.desc}</span>
               </div>
-              <div className="mt-3 flex items-center gap-1.5 text-[10px] text-[#007BA7] font-semibold">
+              <div className="mt-3 flex items-center gap-1.5 text-[10px] text-[#007BA7] font-semibold font-mono">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#007BA7] animate-pulse"></span>
-                Operational
+                ACTIVE NODE
               </div>
             </div>
           ))}
@@ -87,13 +102,16 @@ export default function AgentActivityPage() {
       {/* Latest Run & Logs */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Latest Run Stats */}
-        <div className="lg:col-span-4 glass-card p-6 rounded-2xl border border-white/10">
-          <h4 className="text-base font-bold text-white mb-4">Latest Execution Telemetry</h4>
+        <div className="lg:col-span-4 glass-card hud-bracket p-6 rounded-2xl border border-white/10">
+          <h4 className="text-base font-bold text-white mb-4 flex items-center gap-2 font-mono">
+            <Activity className="w-4 h-4 text-[#FF2D95]" />
+            Telemetry Metrics
+          </h4>
           
-          <div className="space-y-4 text-xs">
+          <div className="space-y-4 text-xs font-mono">
             <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
               <span className="text-slate-400">Run Identifier:</span>
-              <span className="font-mono text-slate-300 font-medium">{latestRun?.uuid || 'run_latest'}</span>
+              <span className="text-slate-300 font-medium">{latestRun?.uuid || 'run_latest_alpha'}</span>
             </div>
 
             <div className="flex items-center justify-between pb-2 border-b border-white/[0.06]">
@@ -127,15 +145,15 @@ export default function AgentActivityPage() {
           <button
             onClick={handleManualTrigger}
             disabled={isTriggering}
-            className="w-full mt-6 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#007BA7] to-[#FF2D95] hover:opacity-95 text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#007BA7]/30 hover:shadow-[#FF2D95]/30 transition-all disabled:opacity-50 cursor-pointer active:scale-[0.98]"
+            className="w-full mt-6 py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#007BA7] to-[#FF2D95] hover:opacity-95 text-white font-mono font-bold text-xs flex items-center justify-center gap-2 shadow-lg shadow-[#007BA7]/30 hover:shadow-[#FF2D95]/30 transition-all disabled:opacity-50 cursor-pointer active:scale-[0.98]"
           >
             <Play className="w-3.5 h-3.5 fill-current" />
-            <span>Execute On-Demand Run</span>
+            <span>{isTriggering ? 'COMPUTING CYCLE...' : 'EXECUTE ON-DEMAND CYCLE'}</span>
           </button>
         </div>
 
         {/* Live Logs Terminal */}
-        <div className="lg:col-span-8 glass-panel p-6 rounded-2xl border border-white/10 flex flex-col">
+        <div className="lg:col-span-8 glass-panel hud-bracket p-6 rounded-2xl border border-white/10 flex flex-col">
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.06]">
             <div className="flex items-center gap-2">
               <Terminal className="w-4 h-4 text-[#FF2D95]" />

@@ -12,6 +12,7 @@ import {
   SlidersHorizontal 
 } from 'lucide-react';
 import { fetchJobs, DiscoveredJob } from '@/lib/api';
+import { soundFx } from '@/lib/soundFx';
 
 export default function JobDiscoveryPage() {
   const [jobs, setJobs] = useState<DiscoveredJob[]>([]);
@@ -55,16 +56,19 @@ export default function JobDiscoveryPage() {
             placeholder="Search by title, company, or location..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-[#121216] border border-white/10 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 transition-all"
+            className="w-full pl-10 pr-4 py-2 bg-[#121216] border border-white/10 rounded-xl text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 transition-all font-mono"
           />
         </div>
 
-        <div className="flex items-center gap-2 bg-[#121216] border border-white/10 px-4 py-2 rounded-xl text-xs text-slate-300 w-full sm:w-auto">
+        <div className="flex items-center gap-2 bg-[#121216] border border-white/10 px-4 py-2 rounded-xl text-xs text-slate-300 w-full sm:w-auto font-mono">
           <SlidersHorizontal className="w-4 h-4 text-[#007BA7]" />
           <span>Min Score:</span>
           <select 
             value={minScore} 
-            onChange={(e) => setMinScore(Number(e.target.value))}
+            onChange={(e) => {
+              soundFx.playClick();
+              setMinScore(Number(e.target.value));
+            }}
             className="bg-[#181820] border border-white/10 rounded px-2 py-1 text-xs text-slate-200 focus:outline-none focus:border-[#007BA7]"
           >
             <option value="0">All Scores</option>
@@ -80,7 +84,7 @@ export default function JobDiscoveryPage() {
         {/* Job List */}
         <div className="lg:col-span-5 space-y-3 max-h-[750px] overflow-y-auto pr-1">
           {jobs.length === 0 ? (
-            <div className="glass-card p-8 rounded-2xl text-center text-slate-500">
+            <div className="glass-card hud-bracket p-8 rounded-2xl text-center text-slate-500 font-mono">
               No jobs matching criteria.
             </div>
           ) : (
@@ -91,8 +95,11 @@ export default function JobDiscoveryPage() {
               return (
                 <div
                   key={job.id}
-                  onClick={() => setSelectedJob(job)}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                  onClick={() => {
+                    soundFx.playClick();
+                    setSelectedJob(job);
+                  }}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer hud-bracket ${
                     isSelected 
                       ? 'bg-[#14141c] border-[#007BA7] shadow-lg shadow-[#007BA7]/15 ring-1 ring-[#007BA7]/40' 
                       : 'glass-card border-white/5 hover:border-[#007BA7]/40'
@@ -107,7 +114,7 @@ export default function JobDiscoveryPage() {
                       </p>
                     </div>
                     <div className="text-right">
-                      <span className={`text-xs font-bold px-2 py-1 rounded border ${
+                      <span className={`text-xs font-bold px-2 py-1 rounded border font-mono ${
                         isHighMatch
                           ? 'text-[#FF2D95] bg-[#FF2D95]/10 border-[#FF2D95]/30 shadow-sm shadow-[#FF2D95]/10'
                           : 'text-[#007BA7] bg-[#007BA7]/10 border-[#007BA7]/30'
@@ -137,23 +144,24 @@ export default function JobDiscoveryPage() {
         {/* Job Detail Card */}
         <div className="lg:col-span-7">
           {selectedJob ? (
-            <div className="glass-panel p-6 rounded-2xl border border-white/10 sticky top-8">
+            <div className="glass-panel hud-bracket p-6 rounded-2xl border border-white/10 sticky top-8">
               <div className="flex items-start justify-between pb-4 border-b border-white/10">
                 <div>
-                  <h3 className="text-xl font-bold text-white">{selectedJob.title}</h3>
+                  <h3 className="text-xl font-bold text-white tracking-tight">{selectedJob.title}</h3>
                   <div className="flex items-center gap-3 text-xs text-slate-400 mt-1">
                     <span className="font-medium text-slate-300">{selectedJob.company}</span>
                     <span>•</span>
                     <span>{selectedJob.location}</span>
                     <span>•</span>
-                    <span className="text-[#007BA7] font-medium">Source: {selectedJob.source}</span>
+                    <span className="text-[#007BA7] font-medium font-mono">Source: {selectedJob.source}</span>
                   </div>
                 </div>
                 <a
                   href={selectedJob.application_url}
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-1.5 text-xs bg-gradient-to-r from-[#007BA7] to-[#0092c4] hover:from-[#008dbf] hover:to-[#FF2D95] text-white font-semibold px-4 py-2 rounded-lg transition-all shadow-md shadow-[#007BA7]/25 cursor-pointer"
+                  onClick={() => soundFx.playChirp()}
+                  className="flex items-center gap-1.5 text-xs bg-gradient-to-r from-[#007BA7] to-[#0092c4] hover:from-[#008dbf] hover:to-[#FF2D95] text-white font-semibold px-4 py-2 rounded-lg transition-all shadow-md shadow-[#007BA7]/25 cursor-pointer font-mono"
                 >
                   <span>Portal Link</span>
                   <ExternalLink className="w-3.5 h-3.5" />

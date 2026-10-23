@@ -14,6 +14,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { fetchApplications, approveApplication, rejectApplication, JobApplicationItem } from '@/lib/api';
+import { soundFx } from '@/lib/soundFx';
 
 export default function ApplicationsPage() {
   const [applications, setApplications] = useState<JobApplicationItem[]>([]);
@@ -37,6 +38,7 @@ export default function ApplicationsPage() {
 
   const handleApprove = async (id: number) => {
     try {
+      soundFx.playChirp();
       await approveApplication(id);
       setActionFeedback(`Application #${id} approved!`);
       loadData();
@@ -48,6 +50,7 @@ export default function ApplicationsPage() {
 
   const handleReject = async (id: number) => {
     try {
+      soundFx.playClick();
       await rejectApplication(id);
       setActionFeedback(`Application #${id} rejected.`);
       loadData();
@@ -70,7 +73,7 @@ export default function ApplicationsPage() {
       />
 
       {actionFeedback && (
-        <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium flex items-center gap-2">
+        <div className="mb-4 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-medium flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" />
           {actionFeedback}
         </div>
@@ -79,7 +82,7 @@ export default function ApplicationsPage() {
       {/* Kanban Columns */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Column 1: Awaiting Approval */}
-        <div className="glass-panel p-5 rounded-2xl border border-white/10 flex flex-col">
+        <div className="glass-panel hud-bracket p-5 rounded-2xl border border-white/10 flex flex-col">
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-[#FF2D95]" />
@@ -128,7 +131,7 @@ export default function ApplicationsPage() {
         </div>
 
         {/* Column 2: Submitted / Applied */}
-        <div className="glass-panel p-5 rounded-2xl border border-white/10 flex flex-col md:col-span-2">
+        <div className="glass-panel hud-bracket p-5 rounded-2xl border border-white/10 flex flex-col md:col-span-2">
           <div className="flex items-center justify-between pb-3 border-b border-white/10 mb-4">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#007BA7]" />

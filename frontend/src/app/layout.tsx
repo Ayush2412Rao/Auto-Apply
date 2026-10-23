@@ -15,9 +15,18 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className="min-h-screen bg-[#0A0A0A] text-slate-100 antialiased selection:bg-[#FF2D95]/30 selection:text-[#FF2D95] relative overflow-x-hidden">
-        {/* Subtle ambient lighting effects */}
-        <div className="fixed top-0 left-1/4 w-96 h-96 bg-[#007BA7]/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
-        <div className="fixed bottom-0 right-10 w-96 h-96 bg-[#FF2D95]/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+        {/* Full-screen JARVIS Holographic Interface Background Texture */}
+        <div 
+          className="fixed inset-0 pointer-events-none -z-30 bg-cover bg-center bg-no-repeat opacity-[0.14] mix-blend-screen filter contrast-125"
+          style={{ backgroundImage: "url('/images/jarvis_hud_bg.jpg')" }}
+        />
+        
+        {/* Cybernetic Scan Grid */}
+        <div className="fixed inset-0 pointer-events-none -z-20 cyber-grid opacity-80" />
+
+        {/* Ambient sci-fi reactor lighting blooms */}
+        <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#007BA7]/12 rounded-full blur-[120px] pointer-events-none -z-10 animate-pulse-glow" />
+        <div className="fixed bottom-0 right-10 w-[500px] h-[500px] bg-[#FF2D95]/10 rounded-full blur-[140px] pointer-events-none -z-10" />
         
         <div className="flex">
           <Sidebar />

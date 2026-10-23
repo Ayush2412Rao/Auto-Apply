@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Play, CheckCircle2, Clock, Sparkles } from 'lucide-react';
 import { triggerAgentRun } from '@/lib/api';
+import { soundFx } from '@/lib/soundFx';
 
 interface HeaderProps {
   title: string;
@@ -15,12 +16,15 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
   const handleRunNow = async () => {
     try {
+      soundFx.playEngage();
       setIsRunning(true);
       setMessage(null);
       await triggerAgentRun();
+      soundFx.playChirp();
       setMessage('Workflow triggered!');
       setTimeout(() => setMessage(null), 4000);
     } catch (err: any) {
+      soundFx.playChirp();
       setMessage('Triggered background run');
       setTimeout(() => setMessage(null), 4000);
     } finally {

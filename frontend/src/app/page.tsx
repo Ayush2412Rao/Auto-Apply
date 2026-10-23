@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Header from '@/components/Header';
+import JarvisCommandDeck from '@/components/JarvisCommandDeck';
 import { 
   Briefcase, 
   Sparkles, 
@@ -12,10 +13,12 @@ import {
   FileText, 
   ShieldCheck,
   Building,
-  MapPin
+  MapPin,
+  Target
 } from 'lucide-react';
 import Link from 'next/link';
 import { fetchStats, fetchJobs, DashboardStats, DiscoveredJob } from '@/lib/api';
+import { soundFx } from '@/lib/soundFx';
 
 export default function OverviewPage() {
   const [stats, setStats] = useState<DashboardStats>({
@@ -52,9 +55,15 @@ export default function OverviewPage() {
         subtitle="Real-time monitoring of your automated career discovery, Gemini AI matching, and verified applications." 
       />
 
+      {/* Interactive JARVIS Command Deck */}
+      <JarvisCommandDeck />
+
       {/* Metrics Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <div className="glass-card p-5 rounded-2xl border border-white/10 hover:border-[#007BA7]/40">
+        <div 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-5 rounded-2xl border border-white/10 hover:border-[#007BA7]/40 cursor-pointer"
+        >
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Jobs Discovered</span>
             <div className="p-2.5 rounded-xl bg-[#007BA7]/15 text-[#007BA7] border border-[#007BA7]/30 shadow-sm shadow-[#007BA7]/20">
@@ -68,7 +77,10 @@ export default function OverviewPage() {
           <p className="text-xs text-slate-400 mt-2">Aggregated across Naukri, Glassdoor & Google</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border border-white/10 hover:border-[#FF2D95]/40">
+        <div 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-5 rounded-2xl border border-white/10 hover:border-[#FF2D95]/40 cursor-pointer"
+        >
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">High Match (≥75%)</span>
             <div className="p-2.5 rounded-xl bg-[#FF2D95]/15 text-[#FF2D95] border border-[#FF2D95]/30 shadow-sm shadow-[#FF2D95]/20">
@@ -82,7 +94,10 @@ export default function OverviewPage() {
           <p className="text-xs text-slate-400 mt-2">Semantically matched via ChromaDB</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border border-white/10 hover:border-[#007BA7]/40">
+        <div 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-5 rounded-2xl border border-white/10 hover:border-[#007BA7]/40 cursor-pointer"
+        >
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Applications Submitted</span>
             <div className="p-2.5 rounded-xl bg-[#007BA7]/15 text-[#007BA7] border border-[#007BA7]/30 shadow-sm shadow-[#007BA7]/20">
@@ -96,7 +111,10 @@ export default function OverviewPage() {
           <p className="text-xs text-slate-400 mt-2">Automated & proof-recorded</p>
         </div>
 
-        <div className="glass-card p-5 rounded-2xl border border-white/10 hover:border-amber-500/40">
+        <div 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-5 rounded-2xl border border-white/10 hover:border-amber-500/40 cursor-pointer"
+        >
           <div className="flex items-center justify-between text-slate-400 mb-3">
             <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">Pending Review</span>
             <div className="p-2.5 rounded-xl bg-amber-500/15 text-amber-400 border border-amber-500/30">
@@ -113,7 +131,11 @@ export default function OverviewPage() {
 
       {/* Main Workflow Pillars */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <Link href="/jobs" className="glass-card p-6 rounded-2xl border border-white/10 hover:border-[#007BA7]/60 group block">
+        <Link 
+          href="/jobs" 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-6 rounded-2xl border border-white/10 hover:border-[#007BA7]/60 group block"
+        >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-xl bg-[#007BA7]/15 text-[#007BA7] border border-[#007BA7]/30 group-hover:scale-110 transition-transform shadow-md shadow-[#007BA7]/20">
               <Briefcase className="w-6 h-6" />
@@ -126,7 +148,11 @@ export default function OverviewPage() {
           </p>
         </Link>
 
-        <Link href="/resumes" className="glass-card p-6 rounded-2xl border border-white/10 hover:border-[#FF2D95]/60 group block">
+        <Link 
+          href="/resumes" 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-6 rounded-2xl border border-white/10 hover:border-[#FF2D95]/60 group block"
+        >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-xl bg-[#FF2D95]/15 text-[#FF2D95] border border-[#FF2D95]/30 group-hover:scale-110 transition-transform shadow-md shadow-[#FF2D95]/20">
               <FileText className="w-6 h-6" />
@@ -139,7 +165,11 @@ export default function OverviewPage() {
           </p>
         </Link>
 
-        <Link href="/applications" className="glass-card p-6 rounded-2xl border border-white/10 hover:border-[#007BA7]/60 group block">
+        <Link 
+          href="/applications" 
+          onClick={() => soundFx.playClick()}
+          className="glass-card hud-bracket p-6 rounded-2xl border border-white/10 hover:border-[#007BA7]/60 group block"
+        >
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 rounded-xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 group-hover:scale-110 transition-transform">
               <ShieldCheck className="w-6 h-6" />

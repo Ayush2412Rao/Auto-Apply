@@ -15,6 +15,7 @@ import {
   Bot
 } from 'lucide-react';
 import { fetchPreferences, updatePreferences } from '@/lib/api';
+import { soundFx } from '@/lib/soundFx';
 
 export default function SettingsPage() {
   const [preferences, setPreferences] = useState({
@@ -62,6 +63,7 @@ export default function SettingsPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      soundFx.playChirp();
       await updatePreferences(preferences);
       setSavedMessage('Settings successfully saved to database!');
       setTimeout(() => setSavedMessage(null), 3000);
@@ -78,7 +80,7 @@ export default function SettingsPage() {
       />
 
       {savedMessage && (
-        <div className="mb-6 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold flex items-center gap-2">
+        <div className="mb-6 p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono font-semibold flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4" />
           {savedMessage}
         </div>
@@ -86,12 +88,12 @@ export default function SettingsPage() {
 
       <form onSubmit={handleSave} className="space-y-6">
         {/* Automation Mode Selector */}
-        <div className="glass-panel p-6 rounded-2xl border border-white/10">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="glass-panel hud-bracket p-6 rounded-2xl border border-white/10">
+          <div className="flex items-center gap-2 mb-2 font-mono">
             <Shield className="w-5 h-5 text-[#007BA7]" />
             <h3 className="text-base font-bold text-white">Automation Submission Policy</h3>
           </div>
-          <p className="text-xs text-slate-400 mb-4">
+          <p className="text-xs text-slate-400 mb-4 font-mono">
             Select how Auto-Apply handles submissions after generating and validating tailored resumes.
           </p>
 
@@ -117,8 +119,11 @@ export default function SettingsPage() {
               return (
                 <div
                   key={item.mode}
-                  onClick={() => setPreferences({ ...preferences, automation_mode: item.mode })}
-                  className={`p-4 rounded-xl border transition-all cursor-pointer ${
+                  onClick={() => {
+                    soundFx.playClick();
+                    setPreferences({ ...preferences, automation_mode: item.mode });
+                  }}
+                  className={`p-4 rounded-xl border transition-all cursor-pointer hud-bracket ${
                     isSelected 
                       ? 'bg-[#14141c] border-[#007BA7] shadow-lg shadow-[#007BA7]/15 ring-1 ring-[#007BA7]/50' 
                       : 'bg-[#121216] border-white/10 hover:border-[#007BA7]/30'
