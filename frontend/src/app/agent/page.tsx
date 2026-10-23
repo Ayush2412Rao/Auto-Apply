@@ -84,7 +84,7 @@ export default function AgentActivityPage() {
             <div 
               key={idx} 
               onClick={() => soundFx.playClick()}
-              className="p-3.5 rounded-xl bg-[#121216] border border-white/10 flex flex-col justify-between hover:border-[#007BA7]/60 hover:shadow-lg hover:shadow-[#007BA7]/15 transition-all cursor-pointer group"
+              className="p-3.5 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] flex flex-col justify-between hover:border-[#007BA7]/60 hover:bg-[#007BA7]/10 hover:shadow-lg hover:shadow-[#007BA7]/15 transition-all cursor-pointer group"
             >
               <div>
                 <span className="text-xs font-bold text-slate-200 block group-hover:text-[#007BA7] transition-colors">{stage.name}</span>
@@ -165,7 +165,7 @@ export default function AgentActivityPage() {
             </span>
           </div>
 
-          <div className="bg-[#08080a] p-4 rounded-xl font-mono text-xs text-slate-300 space-y-2 max-h-[380px] overflow-y-auto border border-white/10 shadow-inner">
+          <div className="bg-black/40 backdrop-blur-xl p-4 rounded-xl font-mono text-xs text-slate-300 space-y-2 max-h-[380px] overflow-y-auto border border-white/[0.08] shadow-inner">
             {latestRun?.logs && latestRun.logs.length > 0 ? (
               latestRun.logs.map((log: string, idx: number) => (
                 <div key={idx} className="flex items-start gap-2">

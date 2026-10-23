@@ -184,13 +184,17 @@ export default function OverviewPage() {
       </div>
 
       {/* Recent Discovered Jobs */}
-      <div className="glass-panel p-6 rounded-2xl border border-white/10">
+      <div className="glass-panel hud-bracket p-6 rounded-2xl border border-white/10">
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h3 className="text-lg font-bold text-white">Recent High-Match Listings</h3>
+            <h3 className="text-lg font-bold text-white tracking-tight">Recent High-Match Listings</h3>
             <p className="text-xs text-slate-400">Evaluated against verified candidate profile</p>
           </div>
-          <Link href="/jobs" className="text-xs text-[#007BA7] hover:text-[#FF2D95] font-semibold flex items-center gap-1 transition-colors">
+          <Link 
+            href="/jobs" 
+            onClick={() => soundFx.playClick()}
+            className="text-xs text-[#007BA7] hover:text-[#FF2D95] font-semibold flex items-center gap-1 transition-colors"
+          >
             View All Jobs <ArrowUpRight className="w-3.5 h-3.5" />
           </Link>
         </div>
@@ -215,7 +219,7 @@ export default function OverviewPage() {
                 </tr>
               ) : (
                 recentJobs.map((job) => (
-                  <tr key={job.id} className="hover:bg-white/[0.03] transition-colors">
+                  <tr key={job.id} className="hover:bg-white/[0.04] transition-colors">
                     <td className="py-3 px-3">
                       <div className="font-semibold text-slate-200">{job.title}</div>
                       <div className="text-xs text-slate-400 flex items-center gap-1.5 mt-0.5">
@@ -239,7 +243,7 @@ export default function OverviewPage() {
                         <span className={`font-bold text-sm ${(job.match_score ?? 85) >= 75 ? 'text-[#FF2D95]' : 'text-[#007BA7]'}`}>
                           {job.match_score ?? 85}%
                         </span>
-                        <div className="w-16 h-2 rounded-full bg-[#181820] overflow-hidden">
+                        <div className="w-16 h-2 rounded-full bg-white/[0.06] overflow-hidden">
                           <div 
                             className="h-full bg-gradient-to-r from-[#007BA7] to-[#FF2D95]" 
                             style={{ width: `${job.match_score ?? 85}%` }}
@@ -250,7 +254,7 @@ export default function OverviewPage() {
                     <td className="py-3 px-3">
                       <div className="flex flex-wrap gap-1 max-w-xs">
                         {(job.matched_skills || ['Python', 'SQL', 'FastAPI']).slice(0, 3).map((s, idx) => (
-                          <span key={idx} className="text-[10px] bg-[#16161b] text-slate-300 px-2 py-0.5 rounded-md border border-white/10">
+                          <span key={idx} className="text-[10px] bg-white/[0.04] backdrop-blur-sm text-slate-300 px-2 py-0.5 rounded-md border border-white/[0.08]">
                             {s}
                           </span>
                         ))}
@@ -261,7 +265,8 @@ export default function OverviewPage() {
                         href={job.application_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-xs bg-[#16161c] hover:bg-gradient-to-r hover:from-[#007BA7] hover:to-[#FF2D95] text-slate-200 hover:text-white px-3.5 py-1.5 rounded-xl border border-white/10 transition-all inline-block font-medium shadow-sm"
+                        onClick={() => soundFx.playChirp()}
+                        className="text-xs bg-white/[0.04] backdrop-blur-md hover:bg-gradient-to-r hover:from-[#007BA7] hover:to-[#FF2D95] text-slate-200 hover:text-white px-3.5 py-1.5 rounded-xl border border-white/10 transition-all inline-block font-medium shadow-sm"
                       >
                         Apply Link
                       </a>

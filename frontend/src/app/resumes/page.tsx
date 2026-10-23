@@ -65,7 +65,7 @@ export default function ResumeStudioPage() {
               target="_blank"
               rel="noreferrer"
               onClick={() => soundFx.playChirp()}
-              className="flex items-center gap-1.5 text-xs bg-[#14141a] hover:bg-[#1a1a24] text-slate-200 px-3.5 py-2 rounded-xl border border-[#007BA7]/30 hover:border-[#007BA7] transition-all cursor-pointer shadow-sm font-mono"
+              className="flex items-center gap-1.5 text-xs bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-md text-slate-200 px-3.5 py-2 rounded-xl border border-[#007BA7]/30 hover:border-[#007BA7] transition-all cursor-pointer shadow-sm font-mono"
             >
               <Download className="w-3.5 h-3.5 text-[#007BA7]" />
               <span>Master PDF</span>
@@ -76,7 +76,7 @@ export default function ResumeStudioPage() {
               target="_blank"
               rel="noreferrer"
               onClick={() => soundFx.playChirp()}
-              className="flex items-center gap-1.5 text-xs bg-[#14141a] hover:bg-[#1a1a24] text-slate-200 px-3.5 py-2 rounded-xl border border-[#FF2D95]/30 hover:border-[#FF2D95] transition-all cursor-pointer shadow-sm font-mono"
+              className="flex items-center gap-1.5 text-xs bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-md text-slate-200 px-3.5 py-2 rounded-xl border border-[#FF2D95]/30 hover:border-[#FF2D95] transition-all cursor-pointer shadow-sm font-mono"
             >
               <Download className="w-3.5 h-3.5 text-[#FF2D95]" />
               <span>Master DOCX</span>
@@ -86,7 +86,7 @@ export default function ResumeStudioPage() {
 
         {/* Verified Facts Breakdown */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-4 text-xs">
-          <div className="flex items-start gap-2.5">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.05]">
             <Building className="w-4 h-4 text-[#007BA7] mt-0.5" />
             <div>
               <span className="font-semibold text-slate-300">Verified Experience:</span>
@@ -94,7 +94,7 @@ export default function ResumeStudioPage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-2.5">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.05]">
             <GraduationCap className="w-4 h-4 text-[#007BA7] mt-0.5" />
             <div>
               <span className="font-semibold text-slate-300">Verified Education:</span>
@@ -102,7 +102,7 @@ export default function ResumeStudioPage() {
             </div>
           </div>
 
-          <div className="flex items-start gap-2.5">
+          <div className="flex items-start gap-2.5 p-3 rounded-xl bg-white/[0.02] backdrop-blur-sm border border-white/[0.05]">
             <Award className="w-4 h-4 text-[#FF2D95] mt-0.5" />
             <div>
               <span className="font-semibold text-slate-300">Verified Core Skills:</span>
@@ -168,7 +168,7 @@ export default function ResumeStudioPage() {
                     target="_blank"
                     rel="noreferrer"
                     onClick={() => soundFx.playChirp()}
-                    className="flex-1 flex items-center justify-center gap-1.5 text-xs bg-[#14141a] hover:bg-[#1a1a24] text-slate-200 font-medium py-2 rounded-xl border border-white/10 hover:border-[#FF2D95]/40 transition-all cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-1.5 text-xs bg-white/[0.04] hover:bg-white/[0.08] backdrop-blur-md text-slate-200 font-medium py-2 rounded-xl border border-white/10 hover:border-[#FF2D95]/40 transition-all cursor-pointer shadow-sm"
                   >
                     <Download className="w-3.5 h-3.5" />
                     <span>Download DOCX</span>

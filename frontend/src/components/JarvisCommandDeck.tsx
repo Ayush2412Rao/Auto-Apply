@@ -99,7 +99,7 @@ export default function JarvisCommandDeck() {
           <button
             onClick={toggleSound}
             title="Toggle Audio Feedback"
-            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#14141c] border border-white/10 hover:border-[#007BA7]/50 text-slate-300 hover:text-white transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/[0.04] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/50 text-slate-300 hover:text-white transition-all cursor-pointer"
           >
             {audioEnabled ? (
               <>
@@ -147,7 +147,7 @@ export default function JarvisCommandDeck() {
             </div>
 
             {/* Live Degree Angle Readout */}
-            <div className="absolute -bottom-2 bg-[#0A0A0A] px-2 py-0.5 rounded text-[10px] font-mono font-bold text-[#007BA7] border border-[#007BA7]/40 shadow-sm">
+            <div className="absolute -bottom-2 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded text-[10px] font-mono font-bold text-[#007BA7] border border-[#007BA7]/40 shadow-sm">
               HDG {String(radarDegree).padStart(3, '0')}°
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function JarvisCommandDeck() {
               <span className="text-xs font-mono font-bold text-[#FF2D95]">99.4% COHERENCE</span>
             </div>
             {/* Futuristic Tech Meter */}
-            <div className="w-full bg-[#121216] h-2 rounded-full overflow-hidden border border-white/10 p-0.5">
+            <div className="w-full bg-white/[0.04] h-2 rounded-full overflow-hidden border border-white/[0.08] p-0.5">
               <div 
                 className="h-full bg-gradient-to-r from-[#007BA7] via-[#0092c4] to-[#FF2D95] rounded-full transition-all duration-700 shadow-sm shadow-[#FF2D95]/50"
                 style={{ width: '99.4%' }}
@@ -173,7 +173,7 @@ export default function JarvisCommandDeck() {
           </div>
 
           {/* Equalizer Audio Frequency Visualizer */}
-          <div className="p-3 rounded-xl bg-[#0d0d12] border border-white/10 flex items-center justify-between">
+          <div className="p-3.5 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Radio className="w-4 h-4 text-[#FF2D95] animate-pulse" />
               <div>
@@ -201,11 +201,11 @@ export default function JarvisCommandDeck() {
 
           {/* Target Profile HUD Matrix */}
           <div className="grid grid-cols-2 gap-2 text-[11px] font-mono">
-            <div className="p-2 rounded-lg bg-[#14141a] border border-white/10">
+            <div className="p-2.5 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08]">
               <span className="text-slate-500 block text-[10px]">EXPERIENCE LOCK</span>
               <span className="text-slate-200 font-semibold text-[#007BA7]">1-2 Years (Auto-Increment)</span>
             </div>
-            <div className="p-2 rounded-lg bg-[#14141a] border border-white/10">
+            <div className="p-2.5 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08]">
               <span className="text-slate-500 block text-[10px]">TARGET COMPENSATION</span>
               <span className="text-slate-200 font-semibold text-[#FF2D95]">6+ LPA CTC (Full-Time)</span>
             </div>
@@ -219,8 +219,8 @@ export default function JarvisCommandDeck() {
             disabled={scanning}
             className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-mono font-bold transition-all shadow-lg cursor-pointer ${
               scanning 
-                ? 'bg-[#181824] text-slate-400 border border-[#007BA7]/30 cursor-wait'
-                : 'bg-gradient-to-r from-[#007BA7] to-[#0092c4] hover:from-[#008dbf] hover:to-[#FF2D95] text-white shadow-[#007BA7]/20 border border-[#007BA7]/40'
+                ? 'bg-white/[0.05] text-slate-400 border border-[#007BA7]/30 cursor-wait'
+                : 'bg-gradient-to-r from-[#007BA7]/90 to-[#0092c4]/90 hover:from-[#008dbf] hover:to-[#FF2D95] text-white shadow-[#007BA7]/20 border border-[#007BA7]/40'
             }`}
           >
             <Crosshair className={`w-4 h-4 ${scanning ? 'animate-spin' : ''}`} />
@@ -232,14 +232,14 @@ export default function JarvisCommandDeck() {
             className={`w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl text-xs font-mono font-bold border transition-all cursor-pointer ${
               overdrive
                 ? 'bg-[#FF2D95]/15 border-[#FF2D95] text-[#FF2D95] shadow-lg shadow-[#FF2D95]/20'
-                : 'bg-[#14141c] hover:bg-[#1a1a24] text-slate-300 border-white/10 hover:border-[#FF2D95]/50'
+                : 'bg-white/[0.03] backdrop-blur-md hover:bg-white/[0.06] text-slate-300 border-white/[0.08] hover:border-[#FF2D95]/50'
             }`}
           >
             <Zap className={`w-4 h-4 ${overdrive ? 'text-[#FF2D95] fill-[#FF2D95]' : 'text-slate-400'}`} />
             <span>{overdrive ? 'OVERDRIVE ENGAGED' : 'ENGAGE OVERDRIVE'}</span>
           </button>
 
-          <div className="p-2.5 rounded-xl bg-[#0c0c10] border border-white/5 text-[10px] font-mono text-slate-400 flex items-center gap-1.5">
+          <div className="p-2.5 rounded-xl bg-white/[0.02] backdrop-blur-md border border-white/[0.06] text-[10px] font-mono text-slate-400 flex items-center gap-1.5">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span>HALLUCINATION GUARD: 100% GROUND TRUTH VERIFIED</span>
           </div>
@@ -249,7 +249,7 @@ export default function JarvisCommandDeck() {
 
       {/* Dynamic Scan Alert Strip */}
       {scanMessage && (
-        <div className="mt-4 p-2.5 rounded-xl bg-[#141420] border border-[#007BA7]/50 text-xs font-mono text-[#007BA7] flex items-center gap-2 animate-fadeIn">
+        <div className="mt-4 p-2.5 rounded-xl bg-black/40 backdrop-blur-xl border border-[#007BA7]/50 text-xs font-mono text-[#007BA7] flex items-center gap-2 animate-fadeIn">
           <Terminal className="w-4 h-4 text-[#FF2D95]" />
           <span className="animate-pulse">{scanMessage}</span>
         </div>

@@ -95,10 +95,10 @@ export default function ApplicationsPage() {
 
           <div className="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1">
             {pendingApps.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-8">No applications awaiting approval.</p>
+              <p className="text-xs text-slate-500 text-center py-8 font-mono">No applications awaiting approval.</p>
             ) : (
               pendingApps.map(app => (
-                <div key={app.id} className="p-4 rounded-xl bg-[#121216] border border-white/10 shadow-sm hover:border-[#007BA7]/30 transition-all">
+                <div key={app.id} className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/40 hover:bg-white/[0.05] transition-all shadow-sm">
                   <div className="flex items-start justify-between">
                     <div>
                       <h4 className="font-semibold text-slate-200 text-sm">{app.title}</h4>
@@ -107,19 +107,19 @@ export default function ApplicationsPage() {
                         {app.company}
                       </p>
                     </div>
-                    <span className="text-xs font-bold text-[#FF2D95]">{app.match_score ?? 85}%</span>
+                    <span className="text-xs font-bold text-[#FF2D95] font-mono">{app.match_score ?? 85}%</span>
                   </div>
 
                   <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/5">
                     <button
                       onClick={() => handleApprove(app.id)}
-                      className="flex-1 text-xs bg-gradient-to-r from-[#007BA7] to-[#0092c4] hover:from-[#008dbf] hover:to-[#FF2D95] text-white font-medium py-1.5 rounded-lg transition-all shadow-md shadow-[#007BA7]/20 cursor-pointer"
+                      className="flex-1 text-xs bg-gradient-to-r from-[#007BA7] to-[#0092c4] hover:from-[#008dbf] hover:to-[#FF2D95] text-white font-medium py-1.5 rounded-lg transition-all shadow-md shadow-[#007BA7]/20 cursor-pointer font-mono"
                     >
                       Approve & Submit
                     </button>
                     <button
                       onClick={() => handleReject(app.id)}
-                      className="text-xs bg-[#181820] hover:bg-[#202028] text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-white/10 transition-colors cursor-pointer"
+                      className="text-xs bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 font-medium px-3 py-1.5 rounded-lg border border-white/10 transition-colors cursor-pointer font-mono"
                     >
                       Reject
                     </button>
@@ -137,21 +137,21 @@ export default function ApplicationsPage() {
               <CheckCircle2 className="w-4 h-4 text-[#007BA7]" />
               <h3 className="font-bold text-sm text-white">Applied & Verified</h3>
             </div>
-            <span className="text-xs bg-[#007BA7]/10 text-[#007BA7] font-bold px-2 py-0.5 rounded-full border border-[#007BA7]/30">
+            <span className="text-xs bg-[#007BA7]/10 text-[#007BA7] font-bold px-2 py-0.5 rounded-full border border-[#007BA7]/30 font-mono">
               {appliedApps.length}
             </span>
           </div>
 
           <div className="space-y-3 flex-1 overflow-y-auto max-h-[600px] pr-1">
             {appliedApps.length === 0 ? (
-              <p className="text-xs text-slate-500 text-center py-8">No applications submitted yet.</p>
+              <p className="text-xs text-slate-500 text-center py-8 font-mono">No applications submitted yet.</p>
             ) : (
               appliedApps.map(app => (
-                <div key={app.id} className="p-4 rounded-xl bg-[#121216] border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-[#007BA7]/30 transition-all">
+                <div key={app.id} className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/40 hover:bg-white/[0.05] flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-all">
                   <div>
                     <div className="flex items-center gap-2">
                       <h4 className="font-semibold text-slate-200 text-sm">{app.title}</h4>
-                      <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-semibold flex items-center gap-1">
+                      <span className="text-[10px] bg-emerald-500/10 text-emerald-400 px-2 py-0.5 rounded border border-emerald-500/20 font-semibold flex items-center gap-1 font-mono">
                         <ShieldCheck className="w-3 h-3" /> Submitted
                       </span>
                     </div>
@@ -164,17 +164,17 @@ export default function ApplicationsPage() {
                       <span>•</span>
                       <span>{app.location}</span>
                       <span>•</span>
-                      <span className="text-[#FF2D95] font-semibold">Match: {app.match_score ?? 85}%</span>
+                      <span className="text-[#FF2D95] font-semibold font-mono">Match: {app.match_score ?? 85}%</span>
                     </div>
 
                     {app.evidence && (
-                      <div className="mt-2 text-[11px] text-slate-400 bg-[#0A0A0A] px-2.5 py-1 rounded border border-white/10 inline-block">
+                      <div className="mt-2 text-[11px] text-slate-400 bg-black/40 backdrop-blur-sm px-2.5 py-1 rounded border border-white/[0.08] inline-block font-mono">
                         Confirmation: <code className="text-[#007BA7] font-mono font-medium">{app.evidence.confirmation_code || 'VERIFIED'}</code>
                       </div>
                     )}
                   </div>
 
-                  <div className="text-right text-xs text-slate-500">
+                  <div className="text-right text-xs text-slate-500 font-mono">
                     <span className="flex items-center gap-1 sm:justify-end">
                       <Calendar className="w-3.5 h-3.5" />
                       {app.submitted_at ? new Date(app.submitted_at).toLocaleDateString() : 'Today'}

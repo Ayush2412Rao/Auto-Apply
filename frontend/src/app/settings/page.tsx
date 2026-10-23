@@ -125,8 +125,8 @@ export default function SettingsPage() {
                   }}
                   className={`p-4 rounded-xl border transition-all cursor-pointer hud-bracket ${
                     isSelected 
-                      ? 'bg-[#14141c] border-[#007BA7] shadow-lg shadow-[#007BA7]/15 ring-1 ring-[#007BA7]/50' 
-                      : 'bg-[#121216] border-white/10 hover:border-[#007BA7]/30'
+                      ? 'bg-[#007BA7]/15 backdrop-blur-md border-[#007BA7] shadow-lg shadow-[#007BA7]/15 ring-1 ring-[#007BA7]/50' 
+                      : 'bg-white/[0.03] backdrop-blur-md border-white/[0.08] hover:border-[#007BA7]/30 hover:bg-white/[0.05]'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -163,7 +163,7 @@ export default function SettingsPage() {
                   ...preferences, 
                   target_titles: e.target.value.split(',').map(s => s.trim()).filter(Boolean) 
                 })}
-                className="w-full p-3 bg-[#121216] border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 transition-all"
+                className="w-full p-3 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 focus:bg-white/[0.06] transition-all"
               />
             </div>
 
@@ -176,7 +176,7 @@ export default function SettingsPage() {
                   ...preferences, 
                   preferred_locations: e.target.value.split(',').map(s => s.trim()).filter(Boolean) 
                 })}
-                className="w-full p-3 bg-[#121216] border border-white/10 rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 transition-all"
+                className="w-full p-3 bg-white/[0.03] backdrop-blur-md border border-white/[0.08] rounded-xl text-slate-200 focus:outline-none focus:border-[#007BA7] focus:ring-1 focus:ring-[#007BA7]/40 focus:bg-white/[0.06] transition-all"
               />
             </div>
 
@@ -206,7 +206,7 @@ export default function SettingsPage() {
                 type="text"
                 value="Immediate / 15 days or less"
                 readOnly
-                className="w-full p-2.5 bg-[#121216]/60 border border-white/5 rounded-xl text-slate-400 cursor-not-allowed"
+                className="w-full p-2.5 bg-white/[0.02] backdrop-blur-sm border border-white/[0.06] rounded-xl text-slate-400 cursor-not-allowed"
               />
             </div>
           </div>
@@ -217,7 +217,7 @@ export default function SettingsPage() {
           <h3 className="text-base font-bold text-white mb-4">Connected Integrations</h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-            <div className="p-4 rounded-xl bg-[#121216] border border-white/10 hover:border-[#FF2D95]/30 transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#FF2D95]/30 hover:bg-white/[0.05] transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Bot className="w-4 h-4 text-[#FF2D95]" />
                 <span className="font-bold text-slate-200">Google Gemini</span>
@@ -226,7 +226,7 @@ export default function SettingsPage() {
               <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● Authenticated</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#121216] border border-white/10 hover:border-[#007BA7]/30 transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/30 hover:bg-white/[0.05] transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Key className="w-4 h-4 text-[#007BA7]" />
                 <span className="font-bold text-slate-200">Apify API</span>
@@ -235,7 +235,7 @@ export default function SettingsPage() {
               <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● Token Configured</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#121216] border border-white/10 hover:border-[#007BA7]/30 transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#007BA7]/30 hover:bg-white/[0.05] transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Mail className="w-4 h-4 text-[#007BA7]" />
                 <span className="font-bold text-slate-200">Gmail SMTP</span>
@@ -244,7 +244,7 @@ export default function SettingsPage() {
               <span className="text-[10px] text-emerald-400 font-semibold mt-2 inline-block">● SMTP Ready</span>
             </div>
 
-            <div className="p-4 rounded-xl bg-[#121216] border border-white/10 hover:border-[#FF2D95]/30 transition-all">
+            <div className="p-4 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] hover:border-[#FF2D95]/30 hover:bg-white/[0.05] transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Database className="w-4 h-4 text-[#FF2D95]" />
                 <span className="font-bold text-slate-200">ChromaDB</span>

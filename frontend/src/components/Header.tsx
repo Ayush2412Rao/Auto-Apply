@@ -41,7 +41,7 @@ export default function Header({ title, subtitle }: HeaderProps) {
 
       <div className="flex items-center gap-3">
         {/* Scheduler Status Badge */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#121216] border border-white/10 text-xs text-slate-300">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.03] backdrop-blur-md border border-white/[0.08] text-xs text-slate-300 font-mono shadow-sm">
           <Clock className="w-3.5 h-3.5 text-[#007BA7]" />
           <span>Hourly Scheduler: <strong className="text-[#007BA7]">Active (Asia/Kolkata)</strong></span>
         </div>
