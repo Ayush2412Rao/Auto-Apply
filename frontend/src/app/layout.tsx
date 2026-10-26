@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 
 export const metadata: Metadata = {
   title: 'AutoApply // Autonomous Career Intelligence',
-  description: 'Next-generation personal AI job discovery and application platform powered by LangGraph, ChromaDB, Gemini, and Apify.',
+  description: 'Next-generation personal AI job discovery and application platform powered by LangGraph, ChromaDB, Gemini, and Scrapy.',
 };
 
 export default function RootLayout({

@@ -64,7 +64,7 @@ export default function AgentActivityPage() {
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
           {[
-            { name: '1. Discovery', desc: 'Apify Scrapers' },
+            { name: '1. Discovery', desc: 'Scrapy Crawlers' },
             { name: '2. Deduplication', desc: 'Canonical URL Check' },
             { name: '3. AI Matching', desc: 'Gemini + ChromaDB' },
             { name: '4. Tailoring', desc: 'Factual ATS Resumes' },
@@ -167,7 +167,7 @@ export default function AgentActivityPage() {
             ) : (
               <>
                 <div className="text-slate-400 flex items-center gap-2"><span className="text-[#007BA7]">&gt;</span> Pipeline initialized (trigger: scheduled_hourly)</div>
-                <div className="text-slate-400 flex items-center gap-2"><span className="text-[#007BA7]">&gt;</span> Discovered raw job listings via Apify client.</div>
+                <div className="text-slate-400 flex items-center gap-2"><span className="text-[#007BA7]">&gt;</span> Discovered raw job listings via Scrapy crawlers.</div>
                 <div className="text-slate-400 flex items-center gap-2"><span className="text-[#007BA7]">&gt;</span> Deduplication complete: new jobs stored in database.</div>
                 <div className="text-slate-400 flex items-center gap-2"><span className="text-[#007BA7]">&gt;</span> Evaluated jobs with Google Gemini.</div>
                 <div className="text-slate-400 flex items-center gap-2"><span className="text-[#007BA7]">&gt;</span> Generated ATS-friendly tailored resumes (PDF &amp; DOCX).</div>

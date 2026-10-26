@@ -7,7 +7,7 @@
 [![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB-orange.svg)](https://www.trychroma.com/)
 [![LangGraph](https://img.shields.io/badge/Orchestration-LangGraph-blue.svg)](https://langchain-ai.github.io/langgraph/)
 
-An autonomous, agentic AI platform that continuously discovers job openings hourly via Apify, evaluates them against a verified candidate profile using ChromaDB semantic retrieval and Google Gemini, generates truthful ATS-friendly tailored resumes (PDF & DOCX) with deterministic anti-hallucination validation, and tracks submissions through a glassmorphism Next.js dashboard.
+An autonomous, agentic AI platform that continuously discovers job openings hourly via standalone Scrapy web crawlers, evaluates them against a verified candidate profile using ChromaDB semantic retrieval and Google Gemini, generates truthful ATS-friendly tailored resumes (PDF & DOCX) with deterministic anti-hallucination validation, and tracks submissions through a glassmorphism Next.js dashboard.
 
 ---
 
@@ -21,8 +21,8 @@ An autonomous, agentic AI platform that continuously discovers job openings hour
                                                                 |
                                                                 v
                                           +---------------------------------------+
-                                          |         Apify Job Discovery           |
-                                          |   (LinkedIn, Indeed, Glassdoor Actors)|
+                                          |        Scrapy Job Discovery           |
+                                          |   (Instahyre, Remote & Tech Spiders)  |
                                           +---------------------+-----------------+
                                                                 |
                                                                 v
@@ -86,7 +86,7 @@ An autonomous, agentic AI platform that continuously discovers job openings hour
 
 ## Key Features
 
-1. **Continuous Autonomous Discovery**: Hourly job collection via Apify actors with SHA-256 deduplication and canonical URL resolution.
+1. **Continuous Autonomous Discovery**: Hourly job collection via standalone Scrapy crawlers (Instahyre, Jobicy, Remotive, Arbeitnow) with SHA-256 deduplication and canonical URL resolution.
 2. **Two-Stage Intelligent Matching**:
    - *Stage 1 (Deterministic)*: Hard constraints on target roles, hybrid/remote locations, and excluded employers.
    - *Stage 2 (Semantic)*: Hybrid ChromaDB cosine similarity retrieval combined with Gemini evaluation rubric (0-100 score).
@@ -116,7 +116,7 @@ Auto-Apply/
 │   │   ├── ai/               # Gemini client, matcher, tailor, validator, document builder
 │   │   ├── api/routes/       # FastAPI endpoints (health, jobs, profile, resumes, agent)
 │   │   ├── db/               # SQLAlchemy engine, session factory, schema migrations
-│   │   ├── discovery/        # Apify scraper client, normalizer, and deduplicator
+│   │   ├── discovery/        # Scrapy spiders, runner, normalizer, and deduplicator
 │   │   ├── models/           # SQLAlchemy models (User, Job, Evaluation, Application, Resume)
 │   │   ├── scheduler/        # APScheduler background runner (Asia/Kolkata timezone)
 │   │   ├── vector_store/     # ChromaDB embedding & semantic retrieval service
@@ -155,10 +155,10 @@ APP_ENV=development
 SECRET_KEY=your_secret_key_here
 DATABASE_URL=sqlite+aiosqlite:///data/career_navigator.db
 
-# AI & Apify
+# AI & Scrapy Crawlers
 GEMINI_API_KEY=your_gemini_api_key_here
 GEMINI_MODEL=gemini-3.8-flash
-APIFY_API_TOKEN=your_apify_token_here
+# No third-party scraping API key required! Scrapy runs locally.
 
 # Scheduler & Timezone
 SCHEDULER_INTERVAL_HOURS=1

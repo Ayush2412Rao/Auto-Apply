@@ -70,3 +70,14 @@ def test_deduplication():
         assert dups >= 1
     finally:
         session.close()
+
+def test_scrapy_job_discovery():
+    from backend.app.discovery.scrapy_client import scrapy_discovery
+    jobs = scrapy_discovery.get_sample_live_jobs()
+    assert len(jobs) >= 2
+    for j in jobs:
+        assert "job_title" in j
+        assert "company_name" in j
+        assert "canonical_url" in j
+        assert j["canonical_url"].startswith("http") or j["canonical_url"].startswith("urn:job:")
+

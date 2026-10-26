@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title=settings.APP_NAME,
-    description="Production-Ready Agentic AI Auto-Apply Platform powered by LangGraph, ChromaDB, Gemini, Apify, and FastAPI.",
+    description="Production-Ready Agentic AI Auto-Apply Platform powered by LangGraph, ChromaDB, Gemini, Scrapy, and FastAPI.",
     version="1.0.0",
     lifespan=lifespan
 )

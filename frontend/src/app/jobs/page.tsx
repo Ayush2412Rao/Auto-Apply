@@ -44,7 +44,7 @@ export default function JobDiscoveryPage() {
       <Header 
         tag="LIVE PORTAL FEED"
         title="Job Discovery" 
-        subtitle="Live opportunities aggregated via Apify and matched with your verified profile." 
+        subtitle="Live opportunities aggregated via Scrapy crawlers and matched with your verified profile." 
       />
 
       {/* Filter Toolbar */}

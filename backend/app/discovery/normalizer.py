@@ -26,8 +26,8 @@ class JobNormalizer:
         return f"urn:job:{source}:{unique_hash}"
 
     @classmethod
-    def normalize(cls, raw_job: Dict[str, Any], source: str = "apify") -> Dict[str, Any]:
-        """Normalizes diverse scraper outputs (Naukri, Google Jobs, LinkedIn, Indeed) into a standardized schema."""
+    def normalize(cls, raw_job: Dict[str, Any], source: str = "scrapy") -> Dict[str, Any]:
+        """Normalizes diverse scraper outputs (Instahyre, Jobicy, Remotive, Arbeitnow) into a standardized schema."""
         title = raw_job.get("title") or raw_job.get("job_title") or raw_job.get("positionName") or "Software Engineer"
         
         # Company name handling (supports string or nested dict from Naukri)

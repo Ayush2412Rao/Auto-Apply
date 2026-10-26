@@ -29,13 +29,10 @@ class Settings(BaseSettings):
     GEMINI_PRO_MODEL: str = "gemini-3.8-pro"
     EMBEDDING_MODEL: str = "text-embedding-004"
 
-    APIFY_API_TOKEN: str = ""
-    APIFY_TOKEN: str = ""
-    DEFAULT_ACTOR_ID: str = "valig/naukri-jobs-scraper"
-    NAUKRI_ACTOR_ID: str = "valig/naukri-jobs-scraper"
-    GOOGLE_JOBS_ACTOR_ID: str = "johnvc/google-jobs-scraper"
-    GLASSDOOR_ACTOR_ID: str = "bebity/glassdoor-jobs-scraper"
-    MULTI_SOURCE_DISCOVERY: bool = True
+    # Scrapy Standalone Crawler Settings
+    SCRAPY_DOWNLOAD_DELAY: float = 0.5
+    SCRAPY_CONCURRENT_REQUESTS: int = 4
+    SCRAPY_DEFAULT_SPIDERS: str = "instahyre,remote_jobs,tech_jobs"
 
     EMAIL_PROVIDER: str = "smtp"
     SMTP_HOST: str = "smtp.gmail.com"
@@ -61,9 +58,6 @@ class Settings(BaseSettings):
 
     def get_gemini_key(self) -> str:
         return self.GEMINI_API_KEY or self.GOOGLE_API_KEY or os.getenv("GEMINI_API_KEY", "")
-
-    def get_apify_key(self) -> str:
-        return self.APIFY_API_TOKEN or self.APIFY_TOKEN or os.getenv("APIFY_API_TOKEN", "")
 
 settings = Settings()
 

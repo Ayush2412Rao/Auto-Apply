@@ -159,10 +159,10 @@ export default function OverviewPage() {
                 0{stats.jobs_discovered}
               </span>
               <span className="text-[10px] uppercase tracking-wider text-[#00E5FF] font-semibold">
-                APIFY FEED
+                SCRAPY CRAWL
               </span>
             </div>
-            <p className="text-[11px] text-slate-400 mt-1">Naukri • Glassdoor • Google</p>
+            <p className="text-[11px] text-slate-400 mt-1">Instahyre • Remote • Tech Feeds</p>
           </div>
 
           <div className="border-l border-white/[0.08] pl-5">

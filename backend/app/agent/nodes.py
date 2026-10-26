@@ -13,7 +13,7 @@ from backend.app.db.session import SyncSessionLocal
 from backend.app.models.user import User, UserProfile, JobPreference
 from backend.app.models.job import DiscoveredJob, JobMatchEvaluation
 from backend.app.models.application import ResumeVersion, JobApplication, AgentRun, AgentRunEvent
-from backend.app.discovery.apify_client import apify_discovery
+from backend.app.discovery.scrapy_client import scrapy_discovery
 from backend.app.discovery.deduplicator import job_deduplicator
 from backend.app.ai.matcher import job_matcher
 from backend.app.ai.resume_tailor import resume_tailor
@@ -25,7 +25,7 @@ from backend.app.automation.form_filler import form_filler
 from backend.app.config import settings
 
 def discover_jobs_node(state: AgentWorkflowState) -> Dict[str, Any]:
-    """Node 1: Discovers job listings via Apify or fallback."""
+    """Node 1: Discovers job listings via standalone Scrapy crawlers (Instahyre, Remote Tech feeds)."""
     session = SyncSessionLocal()
     try:
         user_id = state.get("user_id", 1)
@@ -33,7 +33,7 @@ def discover_jobs_node(state: AgentWorkflowState) -> Dict[str, Any]:
         target_titles = pref.target_titles if pref and pref.target_titles else ["Software Engineer"]
         locations = pref.preferred_locations if pref and pref.preferred_locations else ["India"]
         
-        discovered = apify_discovery.discover_jobs(search_queries=target_titles, locations=locations, max_items=8)
+        discovered = scrapy_discovery.discover_jobs(search_queries=target_titles, locations=locations, max_items=8)
         log_msg = f"Discovered {len(discovered)} raw job listings."
         return {
             "raw_discovered": discovered,

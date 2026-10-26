@@ -223,10 +223,10 @@ export default function SettingsPage() {
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#007BA7]/30 transition-all">
               <div className="flex items-center gap-2 mb-2">
                 <Key className="w-4 h-4 text-[#007BA7]" />
-                <span className="font-semibold text-slate-200">Apify API</span>
+                <span className="font-semibold text-slate-200">Scrapy Engine</span>
               </div>
-              <p className="text-slate-400 text-[11px]">Actor: <strong>Multi-Source Scraper</strong></p>
-              <span className="text-[10px] text-emerald-400 font-medium mt-2 inline-block">● Token Configured</span>
+              <p className="text-slate-400 text-[11px]">Spiders: <strong>Instahyre, Remote & Tech</strong></p>
+              <span className="text-[10px] text-emerald-400 font-medium mt-2 inline-block">● Standalone & Active</span>
             </div>
 
             <div className="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] hover:border-[#007BA7]/30 transition-all">
