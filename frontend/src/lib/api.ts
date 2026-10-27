@@ -99,6 +99,11 @@ export const triggerAgentRun = async () => {
   return res.data;
 };
 
+export const scanRecruiterEmails = async () => {
+  const res = await api.post('/agent/scan-emails');
+  return res.data;
+};
+
 export const fetchLatestRun = async () => {
   const res = await api.get('/agent/runs/latest');
   return res.data;

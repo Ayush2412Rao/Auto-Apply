@@ -93,6 +93,20 @@ Requirements:
         )
         return [job_normalizer.normalize(item, source="instahyre") for item in raw_items]
 
+    def discover_jobs_from_hirist(
+        self, queries: List[str], locations: List[str], max_items: int = 15
+    ) -> List[Dict[str, Any]]:
+        """Scrapes tech jobs from Hirist India matching engineering domains."""
+        raw_items = run_spider(
+            spider_name="hirist",
+            queries=queries,
+            locations=locations,
+            experience=1,
+            max_items=max_items,
+            timeout_seconds=45
+        )
+        return [job_normalizer.normalize(item, source="hirist") for item in raw_items]
+
     def discover_jobs_from_remote(
         self, queries: List[str], max_items: int = 15
     ) -> List[Dict[str, Any]]:
@@ -123,7 +137,7 @@ Requirements:
         locations: Optional[List[str]] = None,
         max_items: int = 20
     ) -> List[Dict[str, Any]]:
-        """Executes multi-spider Scrapy crawlers (Instahyre, Remote tech, Global tech),
+        """Executes multi-spider Scrapy crawlers (Instahyre, Hirist, Remote tech, Global tech),
         normalizes listings, deduplicates, and returns candidate jobs.
         """
         queries = search_queries or ["Software Engineer", "AI Engineer", "Python", "Data Engineer"]
@@ -136,13 +150,19 @@ Requirements:
         instahyre_jobs = self.discover_jobs_from_instahyre(queries=queries, locations=locs, max_items=max_items)
         discovered.extend(instahyre_jobs)
 
-        # 2. Remote & AI Spider: Jobicy & Remotive
+        # 2. Secondary India Tech Spider: Hirist
+        if len(discovered) < max_items:
+            logger.info(f"[Scrapy] Crawling Hirist India tech feed for {queries[:2]}...")
+            hirist_jobs = self.discover_jobs_from_hirist(queries=queries, locations=locs, max_items=max_items - len(discovered))
+            discovered.extend(hirist_jobs)
+
+        # 3. Remote & AI Spider: Jobicy & Remotive
         if len(discovered) < max_items:
             logger.info(f"[Scrapy] Crawling Remote & AI Tech feeds for {queries[:2]}...")
             remote_jobs = self.discover_jobs_from_remote(queries=queries, max_items=max_items - len(discovered))
             discovered.extend(remote_jobs)
 
-        # 3. Web & Startup Tech Spider: Arbeitnow
+        # 4. Web & Startup Tech Spider: Arbeitnow
         if len(discovered) < max_items:
             logger.info(f"[Scrapy] Crawling Web Tech feeds...")
             tech_jobs = self.discover_jobs_from_tech(queries=queries, max_items=max_items - len(discovered))

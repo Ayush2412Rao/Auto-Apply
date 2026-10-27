@@ -4,6 +4,7 @@ from backend.app.db.session import get_sync_db
 from backend.app.models.application import AgentRun, AgentRunEvent, JobApplication
 from backend.app.models.job import DiscoveredJob, JobMatchEvaluation
 from backend.app.agent.graph import execute_pipeline
+from backend.app.notifications.email_scanner import email_scanner
 
 router = APIRouter(prefix="/agent", tags=["Agent"])
 
@@ -15,6 +16,12 @@ def trigger_agent_run(background_tasks: BackgroundTasks):
         "status": "initiated",
         "message": "Agentic Auto-Apply workflow triggered in the background."
     }
+
+@router.post("/scan-emails")
+def scan_recruiter_emails():
+    """Scans candidate inbox via IMAP for recruiter interview invites, assessments, and status updates."""
+    result = email_scanner.scan_inbox(max_emails=40)
+    return result
 
 @router.get("/runs")
 def list_agent_runs(db: Session = Depends(get_sync_db)):

@@ -346,12 +346,18 @@ def submit_applications_node(state: AgentWorkflowState) -> Dict[str, Any]:
                 try:
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
+                    job_ctx = {
+                        "job_title": job_rec.job_title if job_rec else "Software Engineer",
+                        "company_name": job_rec.company_name if job_rec else "Company",
+                        "description": job_rec.description if job_rec else ""
+                    }
                     auto_result = loop.run_until_complete(
                         form_filler.fill_and_submit(
                             application_url=app_url,
                             profile=profile_data,
                             resume_pdf_path=pdf_path,
-                            auto_submit=True
+                            auto_submit=True,
+                            job_context=job_ctx
                         )
                     )
                     loop.close()

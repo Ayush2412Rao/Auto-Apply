@@ -19,7 +19,7 @@ class GeminiClient:
             print("WARNING: GEMINI_API_KEY is not set in environment or .env")
             self.client = None
         else:
-            self.client = genai.Client(api_key=self.api_key)
+            self.client = genai.Client(api_key=self.api_key, http_options={"timeout": 15.0})
 
     def generate_json(self, prompt: str, system_instruction: Optional[str] = None, model: Optional[str] = None) -> Dict[str, Any]:
         """Generates structured JSON output from Gemini."""
@@ -50,5 +50,22 @@ class GeminiClient:
             if text.endswith("```"):
                 text = text[:-3]
             return json.loads(text.strip())
+
+    def generate_text(self, prompt: str, system_instruction: Optional[str] = None, model: Optional[str] = None) -> str:
+        """Generates plain text output from Gemini."""
+        if not self.client:
+            raise ValueError("Gemini API client is not initialized.")
+
+        chosen_model = model or settings.GEMINI_MODEL
+        config = types.GenerateContentConfig(temperature=0.3)
+        if system_instruction:
+            config.system_instruction = system_instruction
+
+        response = self.client.models.generate_content(
+            model=chosen_model,
+            contents=prompt,
+            config=config
+        )
+        return (response.text or "").strip()
 
 gemini_client = GeminiClient()

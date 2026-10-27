@@ -25,20 +25,22 @@ class Settings(BaseSettings):
 
     GEMINI_API_KEY: str = ""
     GOOGLE_API_KEY: str = ""
-    GEMINI_MODEL: str = "gemini-3.8-flash"
-    GEMINI_PRO_MODEL: str = "gemini-3.8-pro"
+    GEMINI_MODEL: str = "gemini-2.5-flash"
+    GEMINI_PRO_MODEL: str = "gemini-2.5-pro"
     EMBEDDING_MODEL: str = "text-embedding-004"
 
     # Scrapy Standalone Crawler Settings
     SCRAPY_DOWNLOAD_DELAY: float = 0.5
     SCRAPY_CONCURRENT_REQUESTS: int = 4
-    SCRAPY_DEFAULT_SPIDERS: str = "instahyre,remote_jobs,tech_jobs"
+    SCRAPY_DEFAULT_SPIDERS: str = "instahyre,hirist,remote_jobs,tech_jobs"
 
     EMAIL_PROVIDER: str = "smtp"
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
     SMTP_PASS: str = ""
+    IMAP_HOST: str = "imap.gmail.com"
+    IMAP_PORT: int = 993
     ALERT_SENDER_EMAIL: str = ""
     ALERT_RECIPIENT_EMAIL: str = ""
 
